@@ -1,5 +1,5 @@
 // Verhoog dit nummer na elke wijziging aan de app, dan halen alle apparaten de nieuwe versie op.
-const VERSION = "v1";
+const VERSION = "v2";
 const CACHE = "taken-" + VERSION;
 const SHELL = [
   "./",
@@ -40,7 +40,7 @@ self.addEventListener("fetch", e => {
   }
 
   // Lettertypes van Google en eigen bestanden: uit de cache, anders ophalen en bewaren.
-  if (url.origin === location.origin || url.hostname.endsWith("fonts.googleapis.com") || url.hostname.endsWith("fonts.gstatic.com")) {
+  if (url.origin === location.origin || url.hostname.endsWith("fonts.googleapis.com") || url.hostname.endsWith("fonts.gstatic.com") || url.hostname === "cdn.jsdelivr.net") {
     e.respondWith(
       caches.match(req).then(hit => hit || fetch(req).then(res => {
         if (res.ok || res.type === "opaque") { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }

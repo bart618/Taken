@@ -16,6 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600&family=Rethink+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <style>
 :root{
   --aub:#57305C;--aub2:#66396B;--pink:#CF9FC8;--tea:#C4D767;--jag:#273937;--ink:#202121;--off:#F6EFF5;
@@ -49,7 +50,17 @@ h1{font-family:Sora,"Rethink Sans",system-ui,sans-serif;font-weight:600;font-siz
 .bar span{display:block;height:100%;background:var(--tea);width:0;transition:width .3s}
 .count{font-family:Sora,sans-serif;font-size:22px;font-weight:600;color:var(--tea)}
 .count small{font-size:14px;color:var(--pink);font-weight:400}
-.sync{font-size:12.5px;color:var(--pink)}
+.sync{font:inherit;font-size:12.5px;color:var(--pink);background:none;border:0;padding:4px 0;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
+.sync:hover{color:var(--off)}
+.modal{position:fixed;inset:0;z-index:60;background:rgba(20,10,22,.55);display:flex;align-items:center;justify-content:center;padding:20px}
+.modal[hidden]{display:none}
+.mbox{background:var(--panel);color:var(--text);border-radius:14px;max-width:400px;width:100%;padding:22px;box-shadow:0 12px 40px rgba(0,0,0,.25)}
+.mbox h2{font-family:Sora,"Rethink Sans",system-ui,sans-serif;font-weight:600;font-size:19px;margin:0 0 6px}
+.mtxt{color:var(--muted);margin:0 0 14px;font-size:14px}
+.mbox label{display:block;font-size:13px;font-weight:600;margin-bottom:12px}
+.mbox input{display:block;width:100%;margin-top:4px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:16px}
+.merr{color:var(--lateText);font-size:13px;min-height:1em;margin:0 0 10px}
+.mrow{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
 .hero{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
 .today{margin:4px 0 0;font-size:17px;color:var(--pink);max-width:52ch}
 .today strong{font-family:Sora,sans-serif;font-weight:600;color:var(--tea);font-size:20px}
@@ -179,7 +190,7 @@ textarea{display:block;width:100%;max-width:72ch;font:inherit;font-size:14px;pad
     <div class="meter">
       <div class="count" id="count">0 <small>van 0 taken klaar</small></div>
       <div class="bar" role="progressbar" aria-label="Voortgang" aria-valuemin="0" aria-valuemax="100" id="barwrap"><span id="bar"></span></div>
-      <span class="sync" id="sync">Opgeslagen op dit apparaat</span>
+      <button type="button" class="sync" id="sync">Opgeslagen op dit apparaat</button>
     </div>
   </div>
 </header>
@@ -215,6 +226,26 @@ textarea{display:block;width:100%;max-width:72ch;font:inherit;font-size:14px;pad
     </aside>
   </div>
 </main>
+<div class="modal" id="acct" hidden role="dialog" aria-modal="true" aria-labelledby="acct-h">
+  <div class="mbox">
+    <div id="acct-in">
+      <h2 id="acct-h">Inloggen om te synchroniseren</h2>
+      <p class="mtxt">Log in met je app-account. Daarna zijn je taken en notities op al je apparaten hetzelfde.</p>
+      <form id="lform" novalidate>
+        <label>E-mailadres<input type="email" id="lemail" autocomplete="username" inputmode="email" autocapitalize="off" required></label>
+        <label>Wachtwoord<input type="password" id="lpass" autocomplete="current-password" required></label>
+        <p class="merr" id="lerr" role="alert"></p>
+        <div class="mrow"><button type="button" class="act" id="lskip">Nu niet</button><button type="submit" class="act pri" id="lbtn">Inloggen</button></div>
+      </form>
+    </div>
+    <div id="acct-out" hidden>
+      <h2>Synchronisatie</h2>
+      <p class="mtxt">Ingelogd als <strong id="aemail"></strong></p>
+      <p class="mtxt" id="astat"></p>
+      <div class="mrow"><button type="button" class="act" id="alogout">Uitloggen</button><button type="button" class="act" id="anow">Nu synchroniseren</button><button type="button" class="act pri" id="aclose">Sluiten</button></div>
+    </div>
+  </div>
+</div>
 <div class="toastbar"><span class="toast" id="toast" role="status"></span></div>
 
 <script>
@@ -227,6 +258,7 @@ try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&s.groups)state=s
 function save(){
   state.ts=Date.now();
   try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){setSync("Opslaan lukte niet in deze browser")}
+  if(typeof schedulePush==="function")schedulePush();
 }
 const setSync=t=>document.getElementById("sync").textContent=t;
 /* vraag de browser om de gegevens niet automatisch op te ruimen */
@@ -473,7 +505,159 @@ document.addEventListener("visibilitychange",()=>{if(document.visibilityState===
 /* PWA: offline werken */
 if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
 
+/* ---------- synchronisatie via Supabase ---------- */
+const SB_URL="https://htgdodlndmzilfhxetbl.supabase.co";
+const SB_KEY="sb_publishable_rxYj1MEXn2Has6uQV1N9_Q_WEiHKgOW";
+const MKEY=KEY+":sync",SKIPKEY=KEY+":nologin";
+let sb=null,user=null,pushTimer=null,deferTimer=null,pushing=false,chan=null,lastOk="";
+let meta={uid:null,base:0};try{Object.assign(meta,JSON.parse(localStorage.getItem(MKEY)||"{}"))}catch(e){}
+const saveMeta=()=>{try{localStorage.setItem(MKEY,JSON.stringify(meta))}catch(e){}};
+const dirty=()=>(state.ts||0)>(meta.base||0);
+const hhmm=()=>new Date().toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"});
+const hasContent=x=>x&&((x.tasks||[]).some(t=>!t.del)||(x.notes||[]).some(n=>!n.del)||(x.groups||[]).filter(g=>!g.del).length>1);
+const sameContent=(a,b)=>{const c=o=>JSON.stringify(Object.assign({},o,{ts:0}));return c(a)===c(b)};
+
+function syncText(){
+  if(!sb)return navigator.onLine?"Opgeslagen op dit apparaat":"Offline · opgeslagen op dit apparaat";
+  if(!user)return "Alleen op dit apparaat · Inloggen";
+  if(!navigator.onLine)return "Offline · wordt later gesynchroniseerd";
+  if(dirty()||pushing)return "Synchroniseren…";
+  return lastOk?`Gesynchroniseerd · ${lastOk}`:"Gesynchroniseerd";
+}
+function syncLabel(){setSync(syncText());const a=document.getElementById("astat");if(a)a.textContent=syncText()}
+
+function applyState(d){
+  if(!Array.isArray(d.notes))d.notes=[];
+  state=d;try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
+  F.rub.clear();buildFilters();render();renderNotes();
+}
+function busy(){
+  const a=document.activeElement;
+  return !!(a&&a.matches&&a.matches("input:not(#q),textarea,select")&&!a.closest("#acct"));
+}
+function downloadBackup(tag){
+  const d=new Date(),stamp=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`taken-backup-${tag?tag+"-":""}${stamp}.json`;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+function schedulePush(ms=800){if(!user)return;clearTimeout(pushTimer);pushTimer=setTimeout(push,ms);syncLabel()}
+async function push(){
+  if(!user||pushing)return;
+  if(!navigator.onLine){syncLabel();return}
+  pushing=true;const snap=state.ts||0;
+  let error=null;
+  try{({error}=await sb.from("boards").upsert({user_id:user.id,data:state,updated_at:new Date().toISOString()}))}catch(e){error=e}
+  pushing=false;
+  if(error){setSync("Synchroniseren mislukt · probeert het zo opnieuw");clearTimeout(pushTimer);pushTimer=setTimeout(push,15000);return}
+  meta.base=Math.max(meta.base||0,snap);saveMeta();lastOk=hhmm();
+  if(dirty())schedulePush(300);else syncLabel();
+}
+async function fetchRow(){
+  try{const {data,error}=await sb.from("boards").select("data,updated_at").eq("user_id",user.id).maybeSingle();
+    if(error)throw error;return data}catch(e){syncLabel();return undefined}
+}
+function handleRemote(row){
+  if(!row||!row.data)return;
+  const r=row.data,rts=r.ts||0;
+  if(rts===state.ts){if(meta.base!==rts){meta.base=rts;saveMeta()}lastOk=hhmm();syncLabel();return}
+  if(rts<=(meta.base||0)){if(dirty())schedulePush(0);return}
+  if(busy()){clearTimeout(deferTimer);deferTimer=setTimeout(()=>handleRemote(row),1500);return}
+  if(dirty()&&state.ts>rts){schedulePush(0);return}
+  const hadLocal=dirty();
+  applyState(r);meta.base=rts;saveMeta();lastOk=hhmm();syncLabel();
+  if(hadLocal)toast("Een nieuwere versie van een ander apparaat is overgenomen");
+}
+async function pull(){
+  if(!user)return;
+  const row=await fetchRow();
+  if(row===undefined)return;
+  if(row===null){if(!state.ts)state.ts=Date.now();schedulePush(0);return}
+  handleRemote(row);
+}
+async function firstSync(){
+  const row=await fetchRow();
+  if(row===undefined){toast("Geen verbinding, synchronisatie volgt later");return false}
+  if(row===null){
+    meta={uid:user.id,base:0};saveMeta();
+    if(!state.ts)state.ts=Date.now();
+    schedulePush(0);toast("Je takenlijst staat nu online");return true;
+  }
+  if(hasContent(state)&&!sameContent(state,row.data)){downloadBackup("dit-apparaat");}
+  applyState(row.data);meta={uid:user.id,base:row.data.ts||0};saveMeta();lastOk=hhmm();
+  toast("Je taken zijn opgehaald");return true;
+}
+function subscribe(){
+  if(chan)sb.removeChannel(chan);
+  chan=sb.channel("board-"+user.id)
+    .on("postgres_changes",{event:"*",schema:"public",table:"boards",filter:"user_id=eq."+user.id},p=>{if(p.new&&p.new.data)handleRemote(p.new)})
+    .subscribe();
+}
+async function onLogin(u){
+  user=u;closeAcct();syncLabel();
+  const ok=meta.uid===u.id?(await pull(),true):await firstSync();
+  if(ok!==false){subscribe()}
+  syncLabel();
+}
+
+/* account-venster */
+const AC=document.getElementById("acct");
+function openAcct(){
+  if(!sb){toast("Synchroniseren is nu niet beschikbaar (geen verbinding)");return}
+  document.getElementById("acct-in").hidden=!!user;
+  document.getElementById("acct-out").hidden=!user;
+  if(user){document.getElementById("aemail").textContent=user.email||"";syncLabel()}
+  document.getElementById("lerr").textContent="";
+  AC.hidden=false;
+  setTimeout(()=>(user?document.getElementById("aclose"):document.getElementById("lemail")).focus(),30);
+}
+function closeAcct(){AC.hidden=true}
+document.getElementById("sync").onclick=openAcct;
+document.getElementById("lskip").onclick=()=>{try{localStorage.setItem(SKIPKEY,"1")}catch(e){}closeAcct()};
+document.getElementById("aclose").onclick=closeAcct;
+AC.addEventListener("keydown",e=>{if(e.key==="Escape")closeAcct()});
+AC.addEventListener("click",e=>{if(e.target===AC)closeAcct()});
+document.getElementById("anow").onclick=async()=>{setSync("Synchroniseren…");await pull();if(dirty())await push();syncLabel()};
+document.getElementById("alogout").onclick=async()=>{
+  if(!confirm("Uitloggen? Je taken blijven op dit apparaat staan, maar worden niet meer gesynchroniseerd."))return;
+  await sb.auth.signOut();user=null;if(chan){sb.removeChannel(chan);chan=null}closeAcct();syncLabel();
+};
+document.getElementById("lform").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const em=document.getElementById("lemail").value.trim(),pw=document.getElementById("lpass").value,err=document.getElementById("lerr"),btn=document.getElementById("lbtn");
+  if(!em||!pw){err.textContent="Vul je e-mailadres en wachtwoord in.";return}
+  btn.disabled=true;btn.textContent="Bezig…";err.textContent="";
+  try{
+    const {data,error}=await sb.auth.signInWithPassword({email:em,password:pw});
+    if(error)throw error;
+    try{localStorage.removeItem(SKIPKEY)}catch(_){}
+    document.getElementById("lpass").value="";
+    await onLogin(data.user);
+  }catch(x){
+    err.textContent=/invalid/i.test(x.message||"")?"E-mailadres of wachtwoord klopt niet.":(navigator.onLine?"Inloggen lukte niet: "+(x.message||"onbekende fout"):"Je bent offline. Probeer het opnieuw met internet.");
+  }finally{btn.disabled=false;btn.textContent="Inloggen"}
+});
+
+window.addEventListener("online",()=>{syncLabel();pull()});
+window.addEventListener("offline",syncLabel);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")pull()});
+setInterval(()=>{if(document.visibilityState==="visible")pull()},60000);
+
+async function initSync(){
+  if(!window.supabase||!window.supabase.createClient){syncLabel();return}
+  try{sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,storageKey:"taken-auth"}})}catch(e){sb=null;syncLabel();return}
+  sb.auth.onAuthStateChange((ev,session)=>{
+    if(ev==="SIGNED_OUT"){user=null;syncLabel()}
+    else if(session&&session.user&&user){user=session.user}
+  });
+  const {data}=await sb.auth.getSession();
+  if(data&&data.session&&data.session.user){onLogin(data.session.user)}
+  else{syncLabel();let skip=false;try{skip=localStorage.getItem(SKIPKEY)==="1"}catch(e){}if(!skip)openAcct()}
+}
+
 buildFilters();render();renderNotes();
+initSync();
 </script>
 </body>
 </html>
