@@ -178,7 +178,35 @@ textarea{display:block;width:100%;max-width:72ch;font:inherit;font-size:14px;pad
 .toastbar{position:sticky;bottom:0;display:flex;justify-content:center;pointer-events:none;padding:0 20px calc(14px + env(safe-area-inset-bottom,0px))}
 .toast:not(:empty){pointer-events:auto;background:var(--ink);color:var(--off);padding:8px 14px;border-radius:8px;font-size:14px}
 .undo{font:inherit;font-size:13px;background:none;border:none;color:var(--tea);cursor:pointer;text-decoration:underline;margin-left:6px}
-@media (max-width:600px){.flabel{min-width:auto;width:100%}input[type=search]{max-width:none}.detail{padding-left:36px}.addrow input[type=date]{display:none}}
+@media (max-width:600px){
+  /* invoervelden op 16px: voorkomt dat iOS inzoomt en het scherm niet meer past */
+  input,textarea,select,.addrow input,.drow input[type=date],.ein,input[type=search],textarea{font-size:16px}
+  /* filterbalk scrolt mee in plaats van vast te staan, en is compacter */
+  .filters{position:static;padding:10px 16px}
+  .flabel{display:none}
+  input[type=search]{max-width:none;min-width:0;width:100%}
+  #f-rub,#f-plan{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-left:-16px;margin-right:-16px;padding:0 16px 2px}
+  #f-rub::-webkit-scrollbar,#f-plan::-webkit-scrollbar{display:none}
+  #f-rub .fb,#f-plan .fb{flex:none;white-space:nowrap;padding:6px 12px}
+  main{padding-left:16px;padding-right:16px}
+  /* taakregel: titel over de volle breedte, datum en knoppen eronder */
+  .row{display:grid;grid-template-columns:26px 22px auto auto 1fr auto;column-gap:8px;row-gap:2px;align-items:center}
+  .row>.cg{grid-column:1;grid-row:1;align-self:start}
+  .row>.cb{grid-column:2;grid-row:1;align-self:start}
+  .row>.main{grid-column:3/-1;grid-row:1}
+  .row>.chip{grid-column:3;grid-row:2}
+  .row>.due{grid-column:4;grid-row:2;margin:0}
+  .row>.acts{grid-column:6;grid-row:2}
+  .noteicon{padding:8px}
+  .detail{padding-left:34px}
+  .drow input[type=date]{min-height:42px;min-width:160px}
+  textarea{max-width:none}
+  /* nieuwe taak: tekst bovenaan, datum en knoppen eronder */
+  .addrow{padding:10px 0 4px}
+  .addrow input[type=text]{flex:1 1 100%;padding:10px 12px}
+  .addrow input[type=date]{display:block;flex:1 1 0;min-width:0;min-height:42px;padding:8px 10px;border-style:solid;background:var(--panel);color:var(--text)}
+  .addrow .gbtn{padding:10px 14px}
+}
 @media (prefers-reduced-motion:reduce){.bar span,.tbtn .chev{transition:none}}
 </style>
 </head>
