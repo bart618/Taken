@@ -76,6 +76,14 @@ h1{font-family:Sora,"Rethink Sans",system-ui,sans-serif;font-weight:600;font-siz
 .fb{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:999px;padding:4px 11px;cursor:pointer}
 .fb[aria-pressed="true"]{background:var(--aub);border-color:var(--aub);color:var(--off)}
 .fb.add{border-style:dashed;color:var(--muted)}
+.fsplit{display:inline-flex;flex:none}
+.fsplit .fmain{border-radius:999px 0 0 999px;border-right-width:0}
+.fsplit .fx{border-radius:0 999px 999px 0;padding:4px 8px;color:var(--muted);line-height:0}
+.fsplit .fx svg{width:14px;height:14px}
+.fsplit .fx:hover{color:var(--text)}
+.fsplit .fx[aria-pressed="true"]{background:var(--late);border-color:var(--late);color:var(--lateText)}
+.fsplit.exc .fmain{text-decoration:line-through;color:var(--muted)}
+.fb.reset{color:var(--muted);border-style:dashed}
 button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--tea);outline-offset:2px}
 input[type=search]{font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text);min-width:200px;flex:1;max-width:320px}
 
@@ -193,6 +201,7 @@ textarea{display:block;width:100%;max-width:72ch;font:inherit;font-size:14px;pad
   #f-rub,#f-plan{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-left:-16px;margin-right:-16px;padding:0 16px 2px}
   #f-rub::-webkit-scrollbar,#f-plan::-webkit-scrollbar{display:none}
   #f-rub .fb,#f-plan .fb{flex:none;white-space:nowrap;padding:6px 12px}
+  #f-rub .fsplit .fx{padding:6px 10px}
   main{padding-left:16px;padding-right:16px}
   /* taakregel: titel over de volle breedte, datum en knoppen eronder */
   .row{display:grid;grid-template-columns:26px 22px auto auto 1fr auto;column-gap:8px;row-gap:2px;align-items:center}
@@ -318,13 +327,21 @@ function dueInfo(s){
 }
 
 /* filters */
-const F={rub:new Set(),plan:null,q:"",hideDone:false};
+const F={rub:new Set(),ex:new Set(),plan:null,q:"",hideDone:false};
+const showG=id=>(!F.rub.size||F.rub.has(id))&&!F.ex.has(id);
+const EYEOFF=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
 const PLAN={late:"Verlopen",today:"Vandaag",week:"Komende 7 dagen",none:"Zonder datum"};
 function buildFilters(){
   const fr=document.getElementById("f-rub");fr.innerHTML=`<span class="flabel">Rubriek</span>`;
-  [...F.rub].forEach(id=>{if(!GA().some(g=>g.id===id))F.rub.delete(id)});
-  GA().forEach(g=>{const b=document.createElement("button");b.className="fb";b.textContent=g.t;b.setAttribute("aria-pressed",F.rub.has(g.id));
-    b.onclick=()=>{F.rub.has(g.id)?F.rub.delete(g.id):F.rub.add(g.id);b.setAttribute("aria-pressed",F.rub.has(g.id));render();renderNotes()};fr.appendChild(b)});
+  [F.rub,F.ex].forEach(S=>[...S].forEach(id=>{if(!GA().some(g=>g.id===id))S.delete(id)}));
+  const refresh=()=>{buildFilters();render();renderNotes()};
+  GA().forEach(g=>{const w=document.createElement("span");w.className="fsplit"+(F.rub.has(g.id)?" inc":"")+(F.ex.has(g.id)?" exc":"");
+    const b=document.createElement("button");b.className="fb fmain";b.textContent=g.t;b.setAttribute("aria-pressed",F.rub.has(g.id));b.title=`Alleen ${g.t} tonen`;
+    b.onclick=()=>{F.ex.delete(g.id);F.rub.has(g.id)?F.rub.delete(g.id):F.rub.add(g.id);refresh();focusQ(`[data-fin="${g.id}"]`)};b.dataset.fin=g.id;
+    const x=document.createElement("button");x.className="fb fx";x.innerHTML=EYEOFF;x.setAttribute("aria-pressed",F.ex.has(g.id));x.title=x.ariaLabel=`${g.t} verbergen`;x.setAttribute("aria-label",`${g.t} verbergen`);
+    x.onclick=()=>{F.rub.delete(g.id);F.ex.has(g.id)?F.ex.delete(g.id):F.ex.add(g.id);refresh();focusQ(`[data-fex="${g.id}"]`)};x.dataset.fex=g.id;
+    w.append(b,x);fr.appendChild(w)});
+  if(F.rub.size||F.ex.size){const r=document.createElement("button");r.className="fb reset";r.textContent="Alles tonen";r.onclick=()=>{F.rub.clear();F.ex.clear();F.ex.clear();refresh()};fr.appendChild(r)}
   const a=document.createElement("button");a.className="fb add";a.textContent="Rubriek toevoegen";a.onclick=addGroup;fr.appendChild(a);
   const fp=document.getElementById("f-plan");fp.innerHTML=`<span class="flabel">Planning</span>`;
   Object.keys(PLAN).forEach(k=>{const b=document.createElement("button");b.className="fb";b.textContent=PLAN[k];b.setAttribute("aria-pressed",F.plan===k);
@@ -374,8 +391,8 @@ function taskLi(t,gid,chip){
 let doneOpen=false;
 function render(){
   const list=document.getElementById("list");let html="",shown=0;
-  const filtering=F.rub.size||F.plan||F.q||F.hideDone;
-  const groups=GA().filter(g=>!F.rub.size||F.rub.has(g.id));
+  const filtering=F.rub.size||F.ex.size||F.plan||F.q||F.hideDone;
+  const groups=GA().filter(g=>showG(g.id));
   groups.forEach(g=>{
     const all=state.tasks.filter(t=>t.g===g.id&&!t.del),vis=all.filter(t=>!t.done&&match(t)).sort((a,b)=>{const x=a.due||"9999-99-99",y=b.due||"9999-99-99";return x<y?-1:x>y?1:0});
     if(!vis.length&&filtering&&(F.plan||F.q||F.hideDone))return;shown+=vis.length+1;
@@ -445,7 +462,7 @@ function saveEdit(id){const f=document.querySelector(`[data-et="${id}"]`),v=f.va
   state.tasks.find(x=>x.id===id).t=v;editing=null;save();render();focusQ(`[data-edit="${id}"]`)}
 function saveGroup(id){const f=document.querySelector(`[data-gin="${id}"]`),v=f.value.trim();if(!v){f.focus();return}
   const g=state.groups.find(x=>x.id===id);g.t=v;if(g.fresh)adding=id;delete g.fresh;editingGroup=null;save();buildFilters();render();renderNotes();focusQ(`[data-add="${id}"]`)}
-function addGroup(){const g={id:uid(),t:"Nieuwe rubriek",fresh:true};state.groups.push(g);F.rub.clear();editingGroup=g.id;buildFilters();render();
+function addGroup(){const g={id:uid(),t:"Nieuwe rubriek",fresh:true};state.groups.push(g);F.rub.clear();F.ex.clear();editingGroup=g.id;buildFilters();render();
   const f=document.querySelector(`[data-gin="${g.id}"]`);if(f){f.scrollIntoView({block:"center"});f.focus();f.select()}}
 document.getElementById("addgroup").onclick=addGroup;
 function moveTask(t,gid){t.g=gid;save();render();toast(`"${t.t}" verplaatst naar ${gname(gid)}`)}
@@ -476,7 +493,7 @@ document.getElementById("restoreg").onclick=()=>{const n=state.groups.filter(g=>
 /* notes */
 const COLS={none:"Wit",pink:"Roze",tea:"Groen",aub:"Paars",sand:"Zand"};
 const NL=document.getElementById("notes");
-function nmatch(n){if(n.del)return false;if(F.rub.size&&!F.rub.has(n.g))return false;if(F.q&&!(n.t+" "+n.body).toLowerCase().includes(F.q))return false;return true}
+function nmatch(n){if(n.del)return false;if((F.rub.size||F.ex.size)&&!showG(n.g))return false;if(F.q&&!(n.t+" "+n.body).toLowerCase().includes(F.q))return false;return true}
 function fmtUpd(ts){if(!ts)return"";const d=new Date(ts);const t=today();const dd=new Date(d);dd.setHours(0,0,0,0);
   if(+dd===+t)return d.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"});return `${d.getDate()} ${MON[d.getMonth()]}`}
 function renderNotes(){
@@ -527,7 +544,7 @@ document.getElementById("importfile").addEventListener("change",e=>{
     try{const d=JSON.parse(r.result);if(!d||!Array.isArray(d.groups)||!Array.isArray(d.tasks))throw 0;
       if(!Array.isArray(d.notes))d.notes=[];
       if(!confirm("Deze back-up vervangt alle taken en notities op dit apparaat. Doorgaan?"))return;
-      const prev=JSON.parse(JSON.stringify(state));state=d;F.rub.clear();save();buildFilters();render();renderNotes();
+      const prev=JSON.parse(JSON.stringify(state));state=d;F.rub.clear();F.ex.clear();save();buildFilters();render();renderNotes();
       toast("Back-up teruggezet",()=>{state=prev;save();buildFilters();render();renderNotes()});
     }catch(_){toast("Dit is geen geldig back-upbestand")}
   };r.readAsText(f);
@@ -563,7 +580,7 @@ function syncLabel(){setSync(syncText());const a=document.getElementById("astat"
 function applyState(d){
   if(!Array.isArray(d.notes))d.notes=[];
   state=d;try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
-  F.rub.clear();buildFilters();render();renderNotes();
+  F.rub.clear();F.ex.clear();buildFilters();render();renderNotes();
 }
 function busy(){
   const a=document.activeElement;
