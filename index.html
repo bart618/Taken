@@ -129,6 +129,11 @@ li.done .tt{text-decoration:line-through;text-decoration-color:var(--muted);colo
 .acts{display:flex;gap:2px;flex:none}
 .star{color:var(--accent);font-size:11px;margin-left:5px;vertical-align:2px;text-decoration:none;display:inline-block}
 .due{flex:none;margin-top:2px;margin-right:-4px}
+.duebtn{position:relative;cursor:pointer}
+.duebtn:hover{filter:brightness(.94)}
+.duebtn:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.duepick{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;padding:0;margin:0;font-size:16px;color-scheme:light dark}
+.duepick::-webkit-calendar-picker-indicator{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;cursor:pointer}
 .detail{padding:0 2px 14px 70px;display:grid;gap:8px}
 .drow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted)}
 .drow input[type=date]{font:inherit;font-size:14px;padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text)}
@@ -359,7 +364,7 @@ function taskLi(t,gid,chip){
         <div class="main"><button class="tbtn" data-open="${t.id}" aria-expanded="${open}">${IC.chev}<span class="tt">${esc(t.t)}${t.note&&t.note.trim()?`<span class="star" title="Heeft een notitie" aria-hidden="true">★</span><span class="sr"> (heeft een notitie)</span>`:""}</span></button>
           </div>
         ${chip?`<span class="chip">${esc(gname(gid))}</span>`:""}
-        ${di?`<span class="st st-${di.k} due">${di.t}</span>`:""}
+        ${di?`<label class="st st-${di.k} due duebtn" title="Datum wijzigen">${di.t}<input type="date" class="duepick" data-due="${t.id}" value="${t.due}" aria-label="Datum van ${esc(t.t)} wijzigen"></label>`:""}
         <div class="acts"><button class="noteicon" data-edit="${t.id}" aria-label="${esc(t.t)} bewerken" title="Bewerken">${IC.edit}</button>
         <button class="noteicon${t.note?" has":""}" data-open="${t.id}" aria-expanded="${open}" aria-label="Notitie en datum bij ${esc(t.t)} ${open?"inklappen":"uitklappen"}" title="${t.note?"Notitie":"Notitie of datum toevoegen"}">${IC.note}${t.note?'<span class="dot"></span>':""}</button>
         <button class="noteicon del" data-del="${t.id}" aria-label="${esc(t.t)} verwijderen" title="Verwijderen">${IC.del}</button></div></div>
@@ -418,6 +423,7 @@ function addTask(g){const inp=document.querySelector(`[data-add="${g}"]`),v=inp?
   const dd=document.querySelector(`[data-adddue="${g}"]`);state.tasks.push({id:uid(),g,t:v,due:dd?dd.value:"",note:"",done:false});save();render();toast(`"${v}" opgeslagen in ${gname(g)}`);focusQ(`[data-add="${g}"]`)}
 L.addEventListener("click",e=>{
   const c=s=>e.target.closest(s);let b;
+  if(b=c(".duepick")){try{if(b.showPicker)b.showPicker()}catch(_){}return}
   if(b=c("[data-donetoggle]")){doneOpen=!doneOpen;render();focusQ("[data-donetoggle]");return}
   if(b=c("[data-addsave]")){addTask(b.dataset.addsave);return}
   if(b=c("[data-gadd]")){const id=b.dataset.gadd;adding=adding===id?null:id;render();if(adding)focusQ(`[data-add="${id}"]`);return}
