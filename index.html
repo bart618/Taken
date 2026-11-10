@@ -228,6 +228,103 @@ textarea{display:block;width:100%;max-width:72ch;font:inherit;font-size:14px;pad
   .addrow .gbtn{padding:10px 14px}
 }
 @media (prefers-reduced-motion:reduce){.bar span,.tbtn .chev{transition:none}}
+
+/* ---------- Dagstart ---------- */
+.dsbtn{position:relative;font:inherit;font-size:14px;font-weight:600;background:var(--tea);color:var(--jag);border:0;border-radius:999px;padding:6px 16px;cursor:pointer}
+.dsbtn:hover{filter:brightness(1.05)}
+.dsbtn:focus-visible,.dsgo:focus-visible,.dsapply:focus-visible{outline:2px solid var(--off);outline-offset:2px}
+.dsdot{position:absolute;top:-3px;right:-3px;width:12px;height:12px;border-radius:50%;background:#E0483E;border:2px solid var(--aub)}
+.ds{position:fixed;inset:0;z-index:55;background:var(--bg);overflow:auto;-webkit-overflow-scrolling:touch}
+.ds[hidden]{display:none}
+.dshead{position:sticky;top:0;z-index:2;background:var(--aub);color:var(--off);padding:16px 20px;padding-top:calc(16px + env(safe-area-inset-top,0px));display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.dshead h2{font-family:Sora,"Rethink Sans",system-ui,sans-serif;font-weight:600;font-size:clamp(20px,3vw,26px);margin:0}
+.dshead p{margin:2px 0 0;color:var(--pink);font-size:13.5px}
+.dsgo{font:inherit;font-weight:600;font-size:14px;background:var(--tea);color:var(--jag);border:0;border-radius:8px;padding:9px 16px;cursor:pointer}
+.dsbody{max-width:1200px;margin:0 auto;padding:20px;padding-bottom:calc(32px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:18px}
+.dssrc{display:flex;flex-wrap:wrap;gap:8px}
+.dssrc span{display:inline-flex;align-items:center;gap:6px;font-size:13px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.dssrc i{width:8px;height:8px;border-radius:50%;background:var(--done)}
+.dssrc i.x{background:var(--lateText)}
+.dsgrid{display:grid;grid-template-columns:320px minmax(0,1fr);gap:18px;align-items:start}
+.dscol{display:flex;flex-direction:column;gap:18px;min-width:0}
+.dsp{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
+.dsp h3{font-family:Sora,"Rethink Sans",system-ui,sans-serif;font-weight:600;font-size:17px;margin:0 0 12px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.dsp h3 small{font-family:"Rethink Sans",system-ui,sans-serif;font-weight:400;font-size:12.5px;color:var(--muted)}
+.dsday{font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;color:var(--muted);margin:14px 0 2px}
+.dsday:first-of-type{margin-top:0}
+.dsag{list-style:none;margin:0;padding:0}
+.dsag li{display:grid;grid-template-columns:48px 1fr;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.dsag li:first-child{border-top:0}
+.dsag time{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted)}
+.dsag .t{font-weight:600}
+.dsag .m{font-size:13px;color:var(--muted)}
+.dsag li.past .t{font-weight:400;color:var(--muted)}
+.dstag{display:inline-block;font-size:11.5px;font-weight:600;border-radius:4px;padding:1px 6px;margin-left:4px;vertical-align:1px;background:var(--warn);color:var(--warnText)}
+.dstag.ok{background:var(--done);color:var(--doneText)}
+.dstag.bad{background:var(--late);color:var(--lateText)}
+.dsg{margin-top:16px}.dsg:first-of-type{margin-top:0}
+.dsg h4{margin:0 0 4px;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);display:flex;gap:8px;align-items:center}
+.dsg h4 b{font-weight:600;color:var(--text);background:var(--chip);border-radius:4px;padding:0 6px}
+.dsrow{display:grid;grid-template-columns:22px 30px minmax(0,1fr);gap:8px;align-items:start;padding:9px 8px;border-radius:8px;cursor:pointer}
+.dsrow:hover{background:var(--bg)}
+.dsrow.off{cursor:default;opacity:.65}
+.dsrow input{width:18px;height:18px;margin:2px 0 0;accent-color:var(--aub);cursor:pointer}
+.dsrow .c{font-size:13px;font-weight:600;color:var(--accent);padding-top:1px}
+.dsrow .t{font-weight:600}
+.dsrow .d{font-size:13px;color:var(--muted)}
+.dsrow .d a{color:var(--accent)}
+.dschg{font-size:12px;font-variant-numeric:tabular-nums;background:var(--chip);color:var(--chipText);border-radius:4px;padding:0 5px;white-space:nowrap}
+.dsleeg{font-size:14px;color:var(--muted);margin:0;padding:4px 8px}
+.dsnote{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.dsnote li{display:grid;grid-template-columns:4px 1fr;gap:10px;font-size:14px}
+.dsnote li::before{content:"";border-radius:2px;background:var(--warnText)}
+.dsnote li.hoog::before{background:var(--lateText)}
+.dsbar{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom,0px));margin-top:16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--aub);color:var(--off);border-radius:10px;padding:10px 12px}
+.dsbar span{font-size:14px}
+.dsapply{font:inherit;font-weight:600;font-size:14px;background:var(--tea);color:var(--jag);border:0;border-radius:8px;padding:8px 14px;cursor:pointer}
+.dsapply:disabled{opacity:.55;cursor:default}
+.dsmsg{border-radius:10px;padding:11px 14px;font-size:14px;margin:0 0 12px;background:var(--late);color:var(--lateText)}
+.dsmsg.ok{background:var(--done);color:var(--doneText)}
+.dsmsg.info{background:var(--chip);color:var(--chipText)}
+.dspros{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.dspro{border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.dspro b{font-size:15.5px}
+.dspro .m{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.dspro .h{font-size:13.5px;background:var(--chip);border-radius:6px;padding:7px 9px}
+.dspro a{color:var(--accent)}
+.dstbl{overflow-x:auto}
+.dstbl table{width:100%;border-collapse:collapse;font-size:14px}
+.dstbl th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--line)}
+.dstbl td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+.dstbl td:first-child{white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--muted)}
+.dsbel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.dsbc{border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.dsbc.klaar{background:var(--bg)}
+.dsbc .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.dsbc b{font-size:15.5px}
+.dsbc .m{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.dsbc .w{font-size:13.5px}
+.dssoort{font-size:11.5px;font-weight:600;border-radius:4px;padding:1px 7px;white-space:nowrap;background:var(--chip);color:var(--chipText)}
+.dssoort.bestaand{background:var(--done);color:var(--doneText)}
+.dssoort.opvolgen{background:var(--warn);color:var(--warnText)}
+.dstel{color:var(--accent);font-weight:600;text-decoration:none;font-variant-numeric:tabular-nums}
+.dsbk{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.dsbk button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:999px;padding:5px 12px;cursor:pointer}
+.dsbk button.pri{background:var(--aub);border-color:var(--aub);color:var(--off)}
+.dsbk button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.dsbn{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.dsbn textarea{font:inherit;font-size:14px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--panel);color:var(--text);min-height:64px;resize:vertical}
+.dsbn .rad{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.dsbn .rad label{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
+.dsbn .rad input{accent-color:var(--aub);margin-top:3px}
+.dsbn .fu{display:flex;flex-direction:column;gap:6px;border-left:3px solid var(--line);padding-left:10px}
+.dsbn .fu[hidden]{display:none}
+.dsbn input[type=text],.dsbn input[type=date]{font:inherit;font-size:14px;border:1px solid var(--line);border-radius:8px;padding:7px 10px;background:var(--panel);color:var(--text);min-width:0}
+.dsbs{font-size:13px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.dsbs button{font:inherit;font-size:12.5px;background:none;border:0;color:var(--accent);text-decoration:underline;cursor:pointer;padding:0}
+@media (max-width:560px){.dsbel{grid-template-columns:1fr}}
+@media (max-width:860px){.dsgrid{grid-template-columns:1fr}}
+@media (max-width:560px){.dspros{grid-template-columns:1fr}.dsbody{padding:14px}}
 </style>
 </head>
 <body>
@@ -239,6 +336,7 @@ textarea{display:block;width:100%;max-width:72ch;font:inherit;font-size:14px;pad
       <div class="count" id="count">0 <small>taken open</small></div>
       <div class="bar" role="progressbar" aria-label="Voortgang" aria-valuemin="0" aria-valuemax="100" id="barwrap"><span id="bar"></span></div>
       <button type="button" class="sync" id="sync">Opgeslagen op dit apparaat</button>
+      <button type="button" class="dsbtn" id="dsbtn" hidden aria-haspopup="dialog">Dagstart<span class="dsdot" id="dsdot" hidden></span></button>
     </div>
   </div>
 </header>
@@ -295,6 +393,7 @@ textarea{display:block;width:100%;max-width:72ch;font:inherit;font-size:14px;pad
     </div>
   </div>
 </div>
+<div class="ds" id="ds" hidden role="dialog" aria-modal="true" aria-labelledby="ds-h"><div id="dsin"></div></div>
 <div class="toastbar"><span class="toast" id="toast" role="status"></span></div>
 
 <script>
@@ -666,7 +765,143 @@ async function onLogin(u){
   const ok=meta.uid===u.id?(await pull(),true):await firstSync();
   if(ok!==false){subscribe()}
   syncLabel();
+  loadDagstart();
 }
+
+/* ---------- Dagstart: ochtendoverzicht van de geplande taken (tabel dagstart in Supabase) ---------- */
+let DS=null;
+const DSE=document.getElementById("ds"),DSI=document.getElementById("dsin");
+const DAGEN=["zondag","maandag","dinsdag","woensdag","donderdag","vrijdag","zaterdag"];
+const MAANDEN=["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
+const isoDag=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const dsDatum=s=>{const d=pd(s);return DAGEN[d.getDay()]+" "+d.getDate()+" "+MAANDEN[d.getMonth()]};
+const dsDue=s=>{if(!s)return"geen datum";const d=pd(s);return DAGEN[d.getDay()].slice(0,2)+" "+d.getDate()+" "+MON[d.getMonth()]};
+const dsTask=id=>state.tasks.find(t=>t.id===id&&!t.del);
+function dsItems(){const v=(DS&&DS.voorstel)||{};return[...(v.afvinken||[]).map(x=>({...x,soort:"A"})),...(v.schuiven||[]).map(x=>({...x,soort:"S"})),...(v.toevoegen||[]).map(x=>({...x,soort:"T"}))]}
+function dsUsable(x){if(x.soort==="T")return"";const t=dsTask(x.id);if(!t)return"taak niet meer gevonden";if(x.soort==="A"&&t.done)return"al afgevinkt";return""}
+const dsBelOpen=()=>{const b=DS&&DS.bellen;return !!b&&(b.items||[]).some(x=>!(b.uitkomsten||{})[x.id])};
+const dsOpen=()=>!!DS&&DS.datum===isoDag(today())&&((!DS.verwerkt&&dsItems().some(x=>!dsUsable(x)))||dsBelOpen());
+function dsBadge(){const b=document.getElementById("dsbtn");b.hidden=!DS;const o=dsOpen();document.getElementById("dsdot").hidden=!o;b.setAttribute("aria-label",o?"Dagstart, er staan nieuwe voorstellen klaar":"Dagstart")}
+async function loadDagstart(){
+  if(window.DAGSTART_PREVIEW){DS=DS||window.DAGSTART_PREVIEW;dsBadge();return}
+  if(!sb||!user)return;
+  try{const {data,error}=await sb.from("dagstart").select("datum,data").eq("user_id",user.id).order("datum",{ascending:false}).limit(1).maybeSingle();
+    if(!error&&data&&data.data){DS=Object.assign({},data.data,{datum:data.datum})}}catch(e){}
+  dsBadge();if(!DSE.hidden)dsRender();
+}
+async function dsPersist(){
+  if(window.DAGSTART_PREVIEW||!sb||!user||!DS)return;
+  try{/* alleen eigen velden terugschrijven, zodat delen die een ochtendtaak intussen schreef blijven staan */
+    const q=()=>sb.from("dagstart");const {data:cur,error:e1}=await q().select("data").eq("user_id",user.id).eq("datum",DS.datum).maybeSingle();if(e1)throw e1;
+    const m=Object.assign({},(cur&&cur.data)||DS,{verwerkt:DS.verwerkt||null});
+    if(DS.bellen)m.bellen=Object.assign({},(cur&&cur.data&&cur.data.bellen)||DS.bellen,{uitkomsten:DS.bellen.uitkomsten||{}});
+    const {error}=await q().update({data:m,updated_at:new Date().toISOString()}).eq("user_id",user.id).eq("datum",DS.datum);if(error)throw error;
+    DS=Object.assign(m,{datum:DS.datum})}
+  catch(e){toast("Je takenlijst is bijgewerkt, maar Dagstart kon niet onthouden dat het verwerkt is")}
+}
+const dsBron=x=>x.bron?(x.link?` · <a href="${esc(x.link)}" target="_blank" rel="noopener">${esc(x.bron)}</a>`:` · ${esc(x.bron)}`):"";
+function dsRow(x,done){
+  const why=done?"":dsUsable(x),t=x.soort==="T"?null:dsTask(x.id),dis=done||!!why;
+  const chk=done?(DS.verwerkt.codes||[]).includes(x.code):!why;
+  let d="";
+  if(x.soort==="A")d=esc(x.waarom||"");
+  else if(x.soort==="S")d=`<span class="dschg">${esc(dsDue(x.van||(t&&t.due)))} → ${esc(dsDue(x.naar))}</span> ${esc(x.reden||"")}`;
+  else d=`${esc(gname(x.g)||"Openstaande Taken")} · <span class="dschg">${esc(dsDue(x.due))}${x.voorstelDatum?" (voorstel)":""}</span> ${esc(x.note||"")}`;
+  return `<label class="dsrow${dis?" off":""}"><input type="checkbox" data-code="${esc(x.code)}"${chk?" checked":""}${dis?" disabled":""}><span class="c">${esc(x.code)}</span><span><span class="t">${esc(x.titel||(t&&t.t)||"")}</span>${why?` <span class="dstag bad">${why}</span>`:""}<br><span class="d">${d}${dsBron(x)}</span></span></label>`;
+}
+function dsGroup(code,naam,items,leeg,done){return `<div class="dsg"><h4><b>${code}</b>${naam}</h4>${items.length?items.map(x=>dsRow(x,done)).join(""):`<p class="dsleeg">${leeg}</p>`}</div>`}
+function dsRender(){
+  const head=sub=>`<div class="dshead"><div><h2 id="ds-h">Dagstart</h2><p>${sub}</p></div><button type="button" class="dsgo" id="dsclose">Naar mijn taken</button></div>`;
+  if(!DS){DSI.innerHTML=head("Nog niets klaargezet")+`<div class="dsbody"><p class="dsmsg info">Er staat nog geen Dagstart klaar. Die wordt elke werkdag vroeg in de ochtend gemaakt.</p></div>`;return}
+  const v=DS.voorstel||{},done=!!DS.verwerkt,items=dsItems(),oud=DS.datum!==isoDag(today());
+  const tag=(s,k)=>s?` <span class="dstag${k?" "+k:""}">${esc(s)}</span>`:"";
+  const agenda=(DS.agenda||[]).map(dag=>`<div class="dsday">${esc(dag.dag)}</div><ul class="dsag">${(dag.items||[]).map(a=>`<li${a.voorbij?' class="past"':""}><time>${esc(a.tijd)}</time><div><div class="t">${esc(a.titel)}</div>${a.info||a.tag?`<div class="m">${esc(a.info||"")}${tag(a.tag)}</div>`:""}</div></li>`).join("")}</ul>`).join("")||'<p class="dsleeg">Geen afspraken.</p>';
+  const o=DS.outreach,f=DS.fireflies;
+  const n=items.length;
+  let h=head(`${esc(dsDatum(DS.datum))}${DS.bijgewerkt?" · bijgewerkt om "+esc(DS.bijgewerkt):""}`)+'<div class="dsbody">';
+  if(oud)h+=`<p class="dsmsg info">Dit is de Dagstart van ${esc(dsDatum(DS.datum))}. Die van vandaag staat nog niet klaar.</p>`;
+  h+=`<div class="dssrc" aria-label="Bronnen">${(DS.bronnen||[]).map(b=>`<span><i${b.ok?"":' class="x"'}></i>${esc(b.n)}${b.fout?": "+esc(b.fout):""}</span>`).join("")}</div>`;
+  h+=`<div class="dsgrid"><div class="dscol"><section class="dsp"><h3>Agenda</h3>${agenda}</section></div><div class="dscol">`;
+  h+=dsBellen();
+  h+=`<section class="dsp" aria-label="Takenvoorstel"><h3>Takenvoorstel <small>Daily Tasks${done?"":" · vink uit wat je niet wilt"}</small></h3>`;
+  if(done)h+=`<p class="dsmsg ok">Verwerkt om ${esc(new Date(DS.verwerkt.ts).toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"}))}: ${(DS.verwerkt.codes||[]).length} van ${n} voorstellen staan in je takenlijst.</p>`;
+  h+=dsGroup("A","Afvinken",(v.afvinken||[]).map(x=>({...x,soort:"A"})),"Niets af te vinken.",done)
+    +dsGroup("S","Schuiven",(v.schuiven||[]).map(x=>({...x,soort:"S"})),"Niets te schuiven.",done)
+    +dsGroup("T","Toevoegen",(v.toevoegen||[]).map(x=>({...x,soort:"T"})),"Geen nieuwe taken.",done);
+  if((v.letop||[]).length)h+=`<div class="dsg"><h4><b>!</b>Let op</h4><ul class="dsnote">${v.letop.map(l=>`<li${l.ernst==="hoog"?' class="hoog"':""}>${esc(l.tekst)}</li>`).join("")}</ul></div>`;
+  if(!done&&n)h+=`<div class="dsbar"><span id="dscount"></span><button type="button" class="dsapply" id="dsapply">Verwerk</button></div>`;
+  h+=`</section>`;
+  if(o){h+=`<section class="dsp" aria-label="Prospects"><h3>Prospects <small>Daily OutReach</small></h3>${o.melding?`<p class="dsmsg${o.ok?" ok":""}">${esc(o.melding)}</p>`:""}<div class="dspros">${(o.items||[]).map(p=>`<article class="dspro"><b>${esc(p.naam)}</b><span class="m">${esc(p.meta||"")}</span>${p.contact?`<span class="m">${esc(p.contact)}</span>`:""}<span class="m">${esc(p.mail||"")}${tag(p.mailstatus,p.mailok?"ok":"bad")}</span>${p.haakje?`<span class="h">${esc(p.haakje)}${p.link?` <a href="${esc(p.link)}" target="_blank" rel="noopener">Bron</a>`:""}</span>`:""}</article>`).join("")}</div></section>`}
+  if(f){h+=`<section class="dsp" aria-label="Fireflies check"><h3>Fireflies check <small>Fireflies vs Twenty${f.datum?" · "+esc(dsDatum(f.datum)):""}</small></h3><p class="dsmsg${f.ok?" ok":""}">${esc(f.conclusie||"")}</p><div class="dstbl"><table><thead><tr><th>Wanneer</th><th>Meeting</th><th>In Twenty</th></tr></thead><tbody>${(f.rijen||[]).map(r=>`<tr><td>${esc(r.wanneer)}</td><td>${r.link?`<a href="${esc(r.link)}" target="_blank" rel="noopener">${esc(r.meeting)}</a>`:esc(r.meeting)}</td><td>${r.status==="verwerkt"?`<span class="dstag ok">verwerkt</span> ${esc(r.twenty||"")}`:r.status==="ontbreekt"?'<span class="dstag bad">ontbreekt</span>':esc(r.status||"")}</td></tr>`).join("")}</tbody></table></div></section>`}
+  h+=`</div></div></div>`;
+  DSI.innerHTML=h;dsCount();
+}
+function dsCount(){const b=document.getElementById("dsapply");if(!b)return;const n=DSI.querySelectorAll("input[data-code]:checked:not(:disabled)").length;b.disabled=!n;b.textContent=n?`Verwerk ${n} ${n===1?"wijziging":"wijzigingen"}`:"Niets geselecteerd";document.getElementById("dscount").textContent=n?"Komt direct in je takenlijst":"Vink aan wat je wilt verwerken"}
+function dsApply(){
+  const codes=[...DSI.querySelectorAll("input[data-code]:checked:not(:disabled)")].map(i=>i.dataset.code);if(!codes.length)return;
+  const prev=JSON.parse(JSON.stringify(state.tasks)),gs=GA(),fallback=(gs.find(g=>g.id==="inbox")||gs[0]||{}).id;let n=0;
+  dsItems().filter(x=>codes.includes(x.code)&&!dsUsable(x)).forEach(x=>{
+    if(x.soort==="A"){const t=dsTask(x.id);t.done=true;t.doneAt=Date.now();n++}
+    else if(x.soort==="S"){const t=dsTask(x.id);t.due=x.naar||t.due;if(x.reden)t.note=(t.note?t.note+"\n\n":"")+`Verschoven naar ${dsDue(x.naar)}: ${x.reden}`;n++}
+    else{state.tasks.push({id:uid(),g:gs.some(g=>g.id===x.g)?x.g:fallback,t:x.titel,due:x.due||"",note:[x.note,x.bron?"Bron: "+x.bron:""].filter(Boolean).join("\n"),done:false,doneAt:0});n++}
+  });
+  save();render();
+  DS.verwerkt={ts:Date.now(),codes};dsPersist();dsRender();dsBadge();
+  toast(`${n} ${n===1?"wijziging":"wijzigingen"} verwerkt in je takenlijst`,()=>{state.tasks=prev;save();render();DS.verwerkt=null;dsPersist();dsRender();dsBadge()});
+}
+
+/* Bellijst: 4 belsuggesties per dag, met Gebeld / Geen gehoor / Niet gebeld */
+const BELSOORT={bestaand:"Bestaand",opvolgen:"Opvolgen",nieuw:"Nieuw"};
+const BELSTATUS={gebeld:"Gebeld",geen_gehoor:"Geen gehoor, komt over 2 werkdagen terug",niet:"Niet gebeld, staat morgen weer op de lijst"};
+let belNote=null;
+function dsBellen(){
+  const b=DS.bellen;if(!b)return"";const u=b.uitkomsten||{},it=b.items||[];
+  const klaar=it.filter(x=>u[x.id]).length;
+  let h=`<section class="dsp" aria-label="Bellen vandaag"><h3>Bellen vandaag <small>${klaar} van ${it.length} afgerond</small></h3>`;
+  if(b.melding)h+=`<p class="dsmsg info">${esc(b.melding)}</p>`;
+  if(!it.length)return h+'<p class="dsleeg">Vandaag geen belsuggesties.</p></section>';
+  h+='<div class="dsbel">'+it.map(x=>{
+    const r=u[x.id];
+    let act;
+    if(belNote===x.id){const k=esc(x.id),wk=new Date();wk.setDate(wk.getDate()+7);
+      act=`<div class="dsbn" data-belform="${k}"><label class="m" for="bn-${k}">Wat is er besproken?</label><textarea id="bn-${k}" data-belnote="${k}"></textarea>
+      <div class="rad" role="radiogroup" aria-label="Wat gebeurt er nu?"><label><input type="radio" name="bv-${k}" value="cyclus" checked> Alleen notitie, terug in de gewone belcyclus</label><label><input type="radio" name="bv-${k}" value="opvolgen"> Opvolgen: taak in Twenty</label></div>
+      <div class="fu" data-belfu="${k}" hidden><label class="m" for="ba-${k}">Wat moet er gebeuren?</label><input type="text" id="ba-${k}" data-belactie="${k}" placeholder="Bijvoorbeeld: offerte sturen, demo plannen"><label class="m" for="bd-${k}">Wanneer?</label><input type="date" id="bd-${k}" data-beldatum="${k}" value="${isoDag(wk)}"></div>
+      <div class="dsbk"><button type="button" class="pri" data-belsave="${k}">Opslaan</button><button type="button" data-belcancel="1">Annuleren</button></div></div>`}
+    else if(r)act=`<div class="dsbs"><span class="dstag${r.status==="gebeld"?" ok":r.status==="niet"?" bad":""}">${esc(BELSTATUS[r.status]||r.status)}</span>${r.status==="gebeld"?(r.vervolg==="opvolgen"?`<span class="dstag">Opvolgen ${esc(dsDue(r.datum))}${r.actie?": "+esc(r.actie):""}</span>`:'<span class="dstag ok">terug in de cyclus</span>'):""}${r.notitie?`<span class="m">${esc(r.notitie)}</span>`:""}<button type="button" data-belundo="${esc(x.id)}">Wijzig</button></div>`;
+    else act=`<div class="dsbk"><button type="button" class="pri" data-bel="gebeld" data-id="${esc(x.id)}">Gebeld</button><button type="button" data-bel="geen_gehoor" data-id="${esc(x.id)}">Geen gehoor</button><button type="button" data-bel="niet" data-id="${esc(x.id)}">Niet gebeld</button></div>`;
+    return `<article class="dsbc${r?" klaar":""}"><div class="top"><div><b>${esc(x.naam)}</b><div class="m">${esc([x.functie,x.bedrijf].filter(Boolean).join(", "))}</div></div><span class="dssoort ${esc(x.soort)}">${esc(BELSOORT[x.soort]||x.soort)}</span></div>`
+      +(x.tel?`<a class="dstel" href="tel:${esc(String(x.tel).replace(/[^+\d]/g,""))}">${esc(x.tel)}</a>`:'<span class="m">Geen telefoonnummer in Twenty</span>')
+      +(x.waarom?`<span class="w">${esc(x.waarom)}</span>`:"")
+      +(x.laatste?`<span class="m">${esc(x.laatste)}</span>`:"")
+      +(x.sinds&&x.sinds!==DS.datum?`<span class="m">Staat op de lijst sinds ${esc(dsDue(x.sinds))}</span>`:"")
+      +act+`</article>`}).join("")+'</div></section>';
+  return h;
+}
+function belSet(id,status,notitie,extra){
+  const b=DS.bellen;b.uitkomsten=b.uitkomsten||{};
+  if(status)b.uitkomsten[id]=Object.assign({status,notitie:notitie||"",ts:Date.now()},extra||{});else delete b.uitkomsten[id];
+  belNote=null;dsPersist();dsRender();dsBadge();
+  if(status){const x=(b.items||[]).find(i=>i.id===id);toast(`${x?x.naam:"Contact"}: ${status==="gebeld"?"gebeld":status==="geen_gehoor"?"geen gehoor":"niet gebeld"}`)}
+}
+DSI.addEventListener("click",e=>{const c=s=>e.target.closest(s);let b;
+  if(b=c("[data-bel]")){const id=b.dataset.id;if(b.dataset.bel==="gebeld"){belNote=id;dsRender();const t=DSI.querySelector(`[data-belnote="${CSS.escape(id)}"]`);if(t)t.focus()}else belSet(id,b.dataset.bel);return}
+  if(b=c("[data-belsave]")){const id=b.dataset.belsave,q=a=>DSI.querySelector(`[${a}="${CSS.escape(id)}"]`),t=q("data-belnote"),f=q("data-belform");
+    const v=(f.querySelector("input[type=radio]:checked")||{}).value||"cyclus";const extra={vervolg:v};
+    if(v==="opvolgen"){const d=q("data-beldatum");if(!d.value){d.setAttribute("aria-invalid","true");d.focus();toast("Kies een datum voor de opvolging");return}extra.actie=q("data-belactie").value.trim();extra.datum=d.value}
+    belSet(id,"gebeld",t?t.value.trim():"",extra);return}
+  if(c("[data-belcancel]")){belNote=null;dsRender();return}
+  if(b=c("[data-belundo]")){belSet(b.dataset.belundo,null);return}
+});
+function dsShow(){dsRender();DSE.hidden=false;document.body.style.overflow="hidden";DSE.scrollTop=0;const c=document.getElementById("dsclose");if(c)c.focus()}
+function dsHide(){DSE.hidden=true;document.body.style.overflow="";document.getElementById("dsbtn").focus()}
+document.getElementById("dsbtn").addEventListener("click",dsShow);
+DSI.addEventListener("click",e=>{if(e.target.closest("#dsclose"))dsHide();else if(e.target.closest("#dsapply"))dsApply()});
+DSI.addEventListener("change",e=>{if(e.target.matches("input[data-code]"))dsCount();
+  if(e.target.matches('.dsbn input[type=radio]')){const f=e.target.closest(".dsbn").querySelector(".fu");f.hidden=e.target.value!=="opvolgen";if(!f.hidden)f.querySelector("input[type=text]").focus()}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!DSE.hidden)dsHide()});
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")loadDagstart()});
+loadDagstart();
 
 /* account-venster */
 const AC=document.getElementById("acct");
