@@ -325,6 +325,55 @@ textarea{display:block;width:100%;max-width:72ch;font:inherit;font-size:14px;pad
 @media (max-width:560px){.dsbel{grid-template-columns:1fr}}
 @media (max-width:860px){.dsgrid{grid-template-columns:1fr}}
 @media (max-width:560px){.dspros{grid-template-columns:1fr}.dsbody{padding:14px}}
+/* ---------- Pipeline ---------- */
+:root{--plc-new:#9C93A6;--plc-pro:#CF9FC8;--plc-vst:#8E5A94;--plc-ond:#57305C;--plc-won:#A9BD3E;--plc-lost:#D8CCD6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--plc-new:#8C8496;--plc-vst:#B07DB6;--plc-ond:#E7CDE3;--plc-won:#C4D767;--plc-lost:#55465A}}
+:root[data-theme="dark"]{--plc-new:#8C8496;--plc-vst:#B07DB6;--plc-ond:#E7CDE3;--plc-won:#C4D767;--plc-lost:#55465A}
+.plbtn{background:var(--pink);color:var(--jag)}
+.plhd{display:flex;gap:8px;align-items:center}
+.plhd .act{background:transparent;color:var(--off);border-color:var(--pink)}
+.plhd .act:disabled{opacity:.6}
+.plkpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.plk{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.plk span{font-size:12px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;color:var(--muted)}
+.plk b{font-family:Sora,"Rethink Sans",system-ui,sans-serif;font-weight:600;font-size:24px;line-height:1.15;font-variant-numeric:tabular-nums}
+.plk small{font-size:13px;color:var(--muted)}
+.pllead{margin:0;font-size:15px;color:var(--muted)}
+.pllead b{color:var(--text);font-weight:600}
+.plfil{display:flex;flex-direction:column;gap:8px}
+.plfil select{font:inherit;font-size:14px;padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text)}
+.plfil .fb i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.plfil .fb[aria-pressed="false"]{opacity:.5}
+.plgrid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:18px;align-items:start}
+.plchart{min-height:240px}
+.plchart svg{display:block}
+.plchart svg text{fill:var(--muted);font-size:12px;font-family:"Rethink Sans",system-ui,sans-serif}
+.plchart .gl{stroke:var(--line)}
+.plchart .tot{fill:var(--text);font-weight:600}
+.plbar{cursor:pointer}
+.plbar:hover{filter:brightness(1.08)}
+.plh{display:flex;flex-direction:column;gap:6px}
+.plhr{font:inherit;color:inherit;background:none;border:0;padding:3px 0;cursor:pointer;display:grid;grid-template-columns:minmax(80px,130px) minmax(0,1fr) auto;gap:10px;align-items:center;text-align:left;width:100%}
+.plhr .l{font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.plhr .trk{height:18px;background:var(--bg);border-radius:4px;overflow:hidden}
+.plhr .trk i{display:block;height:100%;border-radius:4px}
+.plhr .v{font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.plhr .v small{color:var(--muted)}
+.plhr.dim{opacity:.4}
+.plhr:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pltbl{overflow-x:auto}
+.pltbl table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+.pltbl th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+.pltbl th button{font:inherit;color:inherit;text-transform:inherit;letter-spacing:inherit;background:none;border:0;padding:0;cursor:pointer}
+.pltbl td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+.pltbl .num{text-align:right;white-space:nowrap}
+.pltbl .nw{white-space:nowrap}
+.pltbl .mu{color:var(--muted)}
+.pltbl .laat{color:var(--lateText);font-weight:600}
+.plfase{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.plfase i{width:8px;height:8px;border-radius:50%}
+.plmeta{font-size:13px;color:var(--muted);font-weight:400;font-family:"Rethink Sans",system-ui,sans-serif}
+@media (max-width:600px){.plk b{font-size:20px}.plhr{grid-template-columns:minmax(70px,100px) minmax(0,1fr) auto}}
 </style>
 </head>
 <body>
@@ -337,6 +386,7 @@ textarea{display:block;width:100%;max-width:72ch;font:inherit;font-size:14px;pad
       <div class="bar" role="progressbar" aria-label="Voortgang" aria-valuemin="0" aria-valuemax="100" id="barwrap"><span id="bar"></span></div>
       <button type="button" class="sync" id="sync">Opgeslagen op dit apparaat</button>
       <button type="button" class="dsbtn" id="dsbtn" hidden aria-haspopup="dialog">Dagstart<span class="dsdot" id="dsdot" hidden></span></button>
+      <button type="button" class="dsbtn plbtn" id="plbtn" hidden aria-haspopup="dialog">Pipeline</button>
     </div>
   </div>
 </header>
@@ -394,6 +444,7 @@ textarea{display:block;width:100%;max-width:72ch;font:inherit;font-size:14px;pad
   </div>
 </div>
 <div class="ds" id="ds" hidden role="dialog" aria-modal="true" aria-labelledby="ds-h"><div id="dsin"></div></div>
+<div class="ds" id="pl" hidden role="dialog" aria-modal="true" aria-labelledby="pl-h"><div id="plin"></div></div>
 <div class="toastbar"><span class="toast" id="toast" role="status"></span></div>
 
 <script>
@@ -690,7 +741,7 @@ function syncText(){
   if(dirty()||pushing)return "Synchroniseren…";
   return lastOk?`Gesynchroniseerd · ${lastOk}`:"Gesynchroniseerd";
 }
-function syncLabel(){setSync(syncText());const a=document.getElementById("astat");if(a)a.textContent=syncText()}
+function syncLabel(){setSync(syncText());const a=document.getElementById("astat");if(a)a.textContent=syncText();if(typeof plBadge==="function")plBadge()}
 
 function applyState(d){
   if(!Array.isArray(d.notes))d.notes=[];
@@ -902,6 +953,140 @@ DSI.addEventListener("change",e=>{if(e.target.matches("input[data-code]"))dsCoun
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!DSE.hidden)dsHide()});
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")loadDagstart()});
 loadDagstart();
+
+/* ---------- Pipeline: kansen live uit Twenty (Edge Function twenty-pipeline) ---------- */
+const PLE=document.getElementById("pl"),PLI=document.getElementById("plin");
+const PLF=[["NEW","Nieuw","var(--plc-new)"],["PROSPECT","Prospect","var(--plc-pro)"],["PROPOSAL","Voorstel","var(--plc-vst)"],["NEGOTIATING","Onderhandeling","var(--plc-ond)"],["CLOSED_WON","Gewonnen","var(--plc-won)"],["CLOSED_LOST","Verloren","var(--plc-lost)"]];
+const PLO=["NEW","PROSPECT","PROPOSAL","NEGOTIATING"];
+const plFase=k=>PLF.find(f=>f[0]===k)||[k,k,"var(--muted)"];
+const PLDEF=()=>({fases:PLF.map(f=>f[0]),eig:"",per:"",q:"",maat:"bedrag",maand:""});
+const PL={rows:null,at:0,err:"",busy:false,f:PLDEF(),sort:{col:"sluitdatum",dir:1}};
+const plEur=v=>"€ "+Math.round(v||0).toLocaleString("nl-NL");
+const plK=v=>v>=1e6?"€"+(v/1e6).toLocaleString("nl-NL",{maximumFractionDigits:1})+"m":v>=1000?"€"+Math.round(v/1000)+"k":"€"+Math.round(v);
+const plD=s=>s?(+s.slice(8,10))+" "+MON[+s.slice(5,7)-1]+" "+s.slice(0,4):"—";
+const plM=m=>MON[+m.slice(5,7)-1]+" "+m.slice(2,4);
+const plSum=(a,fn)=>a.reduce((s,x)=>s+fn(x),0);
+const plVal=r=>PL.f.maat==="aantal"?1:(r.bedrag||0);
+const plFmt=v=>PL.f.maat==="aantal"?String(v):plEur(v);
+function plBadge(){const b=document.getElementById("plbtn");if(b)b.hidden=!(window.PIPELINE_PREVIEW||(sb&&user))}
+async function plLoad(){
+  if(PL.busy)return;PL.busy=true;PL.err="";plRender();
+  try{
+    let res;
+    if(window.PIPELINE_PREVIEW){await new Promise(r=>setTimeout(r,300));res=window.PIPELINE_PREVIEW}
+    else{if(!sb||!user)throw new Error("log eerst in");const {data,error}=await sb.functions.invoke("twenty-pipeline",{body:{}});if(error)throw error;res=data}
+    if(!res||!res.ok||!Array.isArray(res.rows))throw new Error((res&&res.error)||"onverwacht antwoord");
+    PL.rows=res.rows;PL.at=Date.now();
+  }catch(e){PL.err=navigator.onLine?"Ophalen uit Twenty lukte niet ("+(e.message||e)+").":"Je bent offline. Probeer het opnieuw met internet."}
+  PL.busy=false;plRender();
+}
+function plQuarter(o){const n=new Date();let q=Math.floor(n.getMonth()/3)+o;const y=n.getFullYear()+Math.floor(q/4);q=((q%4)+4)%4;return[`${y}-${String(q*3+1).padStart(2,"0")}-01`,`${y}-${String(q*3+3).padStart(2,"0")}-31`]}
+function plRows(o={}){
+  const f=PL.f,t=isoDag(new Date()),y=String(new Date().getFullYear()),z=f.q.trim().toLowerCase();
+  return(PL.rows||[]).filter(r=>{
+    if(!o.alleFases&&!f.fases.includes(r.fase))return false;
+    if(!o.alleEig&&f.eig&&r.eigenaar!==f.eig)return false;
+    if(z&&!(r.naam+" "+r.bedrijf).toLowerCase().includes(z))return false;
+    if(!o.alleMaanden&&f.maand&&(r.sluitdatum||"").slice(0,7)!==f.maand)return false;
+    const d=r.sluitdatum;
+    switch(f.per){
+      case"dk":{const[a,b]=plQuarter(0);return!!d&&d>=a&&d<=b}
+      case"vk":{const[a,b]=plQuarter(1);return!!d&&d>=a&&d<=b}
+      case"dj":return!!d&&d.slice(0,4)===y;
+      case"vj":return!!d&&d.slice(0,4)===String(+y+1);
+      case"ver":return!!d&&d<t&&PLO.includes(r.fase);
+      case"geen":return!d;
+      default:return true}
+  })}
+function plHBars(items,attr){
+  const max=Math.max(...items.map(x=>x.v),0)||1;
+  return`<div class="plh">${items.map(x=>`<button type="button" class="plhr${x.dim?" dim":""}" ${attr}="${esc(x.key)}" aria-label="${esc(x.label)}: ${esc(plFmt(x.v))}, ${x.n} kansen"><span class="l">${esc(x.label)}</span><span class="trk"><i style="width:${Math.max(1,x.v/max*100)}%;background:${x.c}"></i></span><span class="v">${esc(plFmt(x.v))} <small>· ${x.n}</small></span></button>`).join("")}</div>`}
+function plRender(){
+  const f=PL.f,act=document.activeElement,actId=act&&PLI.contains(act)?act.id:"",sel=actId==="plq"?[act.selectionStart,act.selectionEnd]:null;
+  const tijd=PL.at?new Date(PL.at).toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"}):"";
+  const head=`<div class="dshead"><div><h2 id="pl-h">Pipeline</h2><p>${PL.busy?"Bezig met ophalen uit Twenty…":tijd?"Live uit Twenty · opgehaald om "+tijd:"Kansen uit Twenty"}</p></div><div class="plhd"><button type="button" class="act" id="plref"${PL.busy?" disabled":""}>Verversen</button><button type="button" class="dsgo" id="plclose">Sluiten</button></div></div>`;
+  if(!PL.rows){PLI.innerHTML=head+`<div class="dsbody">${PL.err?`<p class="dsmsg">${esc(PL.err)}</p>`:`<p class="dsleeg">Kansen ophalen uit Twenty…</p>`}</div>`;return}
+  const rows=plRows(),open=rows.filter(r=>PLO.includes(r.fase)),late=rows.filter(r=>r.fase==="PROPOSAL"||r.fase==="NEGOTIATING"),won=rows.filter(r=>r.fase==="CLOSED_WON"),lost=rows.filter(r=>r.fase==="CLOSED_LOST");
+  const top=open.filter(r=>r.bedrag).sort((a,b)=>b.bedrag-a.bedrag)[0];
+  const eigs=[...new Set(PL.rows.map(r=>r.eigenaar))].sort((a,b)=>(a==="Geen eigenaar")-(b==="Geen eigenaar")||a.localeCompare(b,"nl"));
+  const opt=(v,t,c)=>`<option value="${esc(v)}"${c===v?" selected":""}>${esc(t)}</option>`;
+  const actief=[f.maand?`<button type="button" class="fb" data-plclr="maand">Maand: ${esc(plM(f.maand))} ×</button>`:"",f.eig?`<button type="button" class="fb" data-plclr="eig">Eigenaar: ${esc(f.eig)} ×</button>`:""].join("");
+  const filters=`<div class="dsp plfil" aria-label="Filters">
+    <div class="frow"><span class="flabel">Fase</span>${PLF.map(([k,l,c])=>`<button type="button" class="fb" data-plfase="${k}" aria-pressed="${f.fases.includes(k)}"><i style="background:${c}"></i>${l}</button>`).join("")}</div>
+    <div class="frow"><span class="flabel">Eigenaar</span><select id="pleig" aria-label="Eigenaar">${opt("","Alle eigenaren",f.eig)}${eigs.map(e=>opt(e,e,f.eig)).join("")}</select>
+      <select id="plper" aria-label="Sluitdatum">${[["","Alle sluitdatums"],["dk","Dit kwartaal"],["vk","Volgend kwartaal"],["dj","Dit jaar"],["vj","Volgend jaar"],["ver","Verlopen (nog open)"],["geen","Geen sluitdatum"]].map(([v,t])=>opt(v,t,f.per)).join("")}</select></div>
+    <div class="frow"><span class="flabel">Zoeken</span><input type="search" id="plq" value="${esc(f.q)}" placeholder="Kans of bedrijf" aria-label="Zoek op kans of bedrijf"></div>
+    <div class="frow"><span class="flabel">Tonen</span><button type="button" class="fb" data-plmaat="bedrag" aria-pressed="${f.maat==="bedrag"}">Bedrag</button><button type="button" class="fb" data-plmaat="aantal" aria-pressed="${f.maat==="aantal"}">Aantal</button><button type="button" class="fb reset" id="plreset">Filters wissen</button>${actief}</div>
+  </div>`;
+  const wr=won.length+lost.length;
+  const kpis=`<div class="plkpis">
+    <div class="plk"><span>Open pipeline</span><b>${plEur(plSum(open,r=>r.bedrag||0))}</b><small>${open.length} open kansen</small></div>
+    <div class="plk"><span>Voorstel en onderhandeling</span><b>${plEur(plSum(late,r=>r.bedrag||0))}</b><small>${late.length} kansen in de laatste fases</small></div>
+    <div class="plk"><span>Gewonnen</span><b>${plEur(plSum(won,r=>r.bedrag||0))}</b><small>${won.length} gewonnen kansen</small></div>
+    <div class="plk"><span>Winratio</span><b>${wr?Math.round(won.length/wr*100)+"%":"—"}</b><small>gewonnen van ${wr} afgesloten kansen</small></div></div>`;
+  const lead=`<p class="pllead">Open pipeline binnen deze selectie: <b>${plEur(plSum(open,r=>r.bedrag||0))}</b> over <b>${open.length}</b> kansen.${top?` Grootste open kans: <b>${esc(top.naam)}</b> bij ${esc(top.bedrijf)} (${plEur(top.bedrag)}).`:""}</p>`;
+  const zonder=plRows({alleMaanden:true}).filter(r=>!r.sluitdatum).length;
+  const fr=plRows({alleFases:true});
+  const faseItems=PLF.map(([k,l,c])=>{const rs=fr.filter(r=>r.fase===k);return{key:k,label:l,c,v:plSum(rs,plVal),n:rs.length,dim:!f.fases.includes(k)}}).filter(x=>x.n);
+  const eigMap=new Map();rows.filter(r=>PLO.includes(r.fase)).forEach(r=>{const o=eigMap.get(r.eigenaar)||{key:r.eigenaar,label:r.eigenaar,c:"var(--accent)",v:0,n:0};o.v+=plVal(r);o.n++;eigMap.set(r.eigenaar,o)});
+  const eigItems=[...eigMap.values()].sort((a,b)=>b.v-a.v).map(o=>({...o,dim:!!f.eig&&f.eig!==o.key}));
+  const s=PL.sort,ord=Object.fromEntries(PLF.map((x,i)=>[x[0],i]));
+  const kv=r=>s.col==="fase"?ord[r.fase]:r[s.col];
+  const sorted=rows.slice().sort((a,b)=>{const va=kv(a),vb=kv(b),na=va==null||va==="",nb=vb==null||vb==="";if(na!==nb)return na?1:-1;return(typeof va==="number"?va-vb:String(va).localeCompare(String(vb),"nl"))*s.dir});
+  const vandaag=isoDag(new Date());
+  const th=(c,t,cls)=>`<th${cls?` class="${cls}"`:""} aria-sort="${s.col===c?(s.dir>0?"ascending":"descending"):"none"}"><button type="button" data-plsort="${c}">${t}${s.col===c?(s.dir>0?" ↑":" ↓"):""}</button></th>`;
+  const tabel=`<div class="dsp"><h3>Kansen <small>${rows.length} van ${PL.rows.length} · totaal ${plEur(plSum(rows,r=>r.bedrag||0))}</small></h3><div class="pltbl"><table><thead><tr>${th("naam","Kans")}${th("bedrijf","Bedrijf")}${th("eigenaar","Eigenaar")}${th("fase","Fase")}${th("bedrag","Bedrag","num")}${th("sluitdatum","Sluitdatum")}${th("startdatum","Start")}</tr></thead><tbody>${sorted.map(r=>{const fz=plFase(r.fase),laat=r.sluitdatum&&r.sluitdatum<vandaag&&PLO.includes(r.fase);return`<tr><td>${esc(r.naam)}</td><td${r.bedrijf==="Geen bedrijf"?' class="mu"':""}>${esc(r.bedrijf)}</td><td class="nw${r.eigenaar==="Geen eigenaar"?" mu":""}">${esc(r.eigenaar)}</td><td><span class="plfase"><i style="background:${fz[2]}"></i>${esc(fz[1])}</span></td><td class="num">${r.bedrag==null?"—":plEur(r.bedrag)}</td><td class="nw${laat?" laat":r.sluitdatum?"":" mu"}"${laat?' title="Sluitdatum verstreken, kans staat nog open"':""}>${plD(r.sluitdatum)}</td><td class="nw${r.startdatum?"":" mu"}">${plD(r.startdatum)}</td></tr>`}).join("")||`<tr><td colspan="7" class="mu">Geen kansen binnen deze filters.</td></tr>`}</tbody></table></div></div>`;
+  PLI.innerHTML=head+`<div class="dsbody">${PL.err?`<p class="dsmsg">${esc(PL.err)}</p>`:""}${lead}${filters}${kpis}
+    <div class="plgrid2">
+      <div class="dsp"><h3>Per sluitmaand <small>klik op een maand om te filteren</small></h3><div class="plchart" id="plmaand"></div>${zonder?`<p class="plmeta">${zonder} ${zonder===1?"kans heeft":"kansen hebben"} geen sluitdatum en ${zonder===1?"staat":"staan"} niet in deze grafiek.</p>`:""}</div>
+      <div class="dsp"><h3>Per fase <small>klik om alleen die fase te tonen</small></h3>${faseItems.length?plHBars(faseItems,"data-plonly"):'<p class="dsleeg">Geen kansen binnen deze filters.</p>'}</div>
+    </div>
+    <div class="dsp"><h3>Open pipeline per eigenaar <small>klik op een naam om te filteren</small></h3>${eigItems.length?plHBars(eigItems,"data-pleig"):'<p class="dsleeg">Geen open kansen binnen deze filters.</p>'}</div>
+    ${tabel}</div>`;
+  plChart();
+  if(actId){const el=document.getElementById(actId);if(el){el.focus();if(sel&&el.setSelectionRange)try{el.setSelectionRange(sel[0],sel[1])}catch(e){}}}
+}
+function plChart(){
+  const el=document.getElementById("plmaand");if(!el)return;
+  const rs=plRows({alleMaanden:true}).filter(r=>r.sluitdatum);
+  const ms=[...new Set(rs.map(r=>r.sluitdatum.slice(0,7)))].sort();
+  if(!ms.length){el.innerHTML='<p class="dsleeg">Geen kansen met een sluitdatum binnen deze filters.</p>';return}
+  const data=ms.map(m=>{const o={m,tot:0,n:0,p:{}};rs.filter(r=>r.sluitdatum.slice(0,7)===m).forEach(r=>{o.p[r.fase]=(o.p[r.fase]||0)+plVal(r);o.tot+=plVal(r);o.n++});return o});
+  const W=Math.max(260,el.clientWidth||520),H=240,mb=24,mt=20,mr=4;
+  const max=Math.max(...data.map(o=>o.tot))||1,pw=Math.pow(10,Math.floor(Math.log10(max/4))),q=max/4/pw,step=(q<=1?1:q<=2?2:q<=5?5:10)*pw,topv=Math.ceil(max/step)*step;
+  const tf=v=>PL.f.maat==="aantal"?String(v):plK(v);
+  const ticks=[];for(let v=0;v<=topv+1e-9;v+=step)ticks.push(v);
+  const ml=Math.max(...ticks.map(v=>tf(v).length))*7+10;
+  const y=v=>H-mb-(v/topv)*(H-mb-mt),band=(W-ml-mr)/ms.length,bw=Math.min(52,band*.68),every=Math.max(1,Math.ceil(46/band));
+  let g=ticks.map(v=>`<line class="gl" x1="${ml}" x2="${W-mr}" y1="${y(v)}" y2="${y(v)}"/><text x="${ml-8}" y="${y(v)+4}" text-anchor="end">${tf(v)}</text>`).join("");
+  data.forEach((o,i)=>{const x=ml+band*i+(band-bw)/2;let acc=0;const dim=PL.f.maand&&PL.f.maand!==o.m?' opacity="0.3"':"";
+    PLF.forEach(([k,l,c])=>{const v=o.p[k]||0;if(!v)return;const y1=y(acc+v),h=y(acc)-y1;acc+=v;
+      g+=`<rect class="plbar" data-plmaand="${o.m}" x="${x}" y="${y1}" width="${bw}" height="${Math.max(0,h)}" style="fill:${c}"${dim}><title>${plM(o.m)} · ${l}: ${esc(plFmt(v))}</title></rect>`});
+    if(bw>=30)g+=`<text class="tot" x="${x+bw/2}" y="${y(o.tot)-6}" text-anchor="middle"${dim}>${tf(o.tot)}</text>`;
+    if(i%every===0)g+=`<text x="${x+bw/2}" y="${H-6}" text-anchor="middle">${plM(o.m)}</text>`});
+  el.innerHTML=`<svg width="${W}" height="${H}" role="img" aria-label="${PL.f.maat==="aantal"?"Aantal":"Bedrag"} kansen per sluitmaand, gestapeld per fase">${g}</svg>`;
+}
+function plShow(){PLE.hidden=false;document.body.style.overflow="hidden";PLE.scrollTop=0;plRender();if(!PL.rows||Date.now()-PL.at>5*60000)plLoad();const c=document.getElementById("plclose");if(c)c.focus()}
+function plHide(){PLE.hidden=true;document.body.style.overflow="";document.getElementById("plbtn").focus()}
+document.getElementById("plbtn").addEventListener("click",plShow);
+PLI.addEventListener("click",e=>{const c=s=>e.target.closest(s);let b;const f=PL.f;
+  if(c("#plclose"))return plHide();
+  if(c("#plref"))return plLoad();
+  if(c("#plreset")){PL.f=PLDEF();return plRender()}
+  if(b=c("[data-plfase]")){const k=b.dataset.plfase;f.fases=f.fases.includes(k)?f.fases.filter(x=>x!==k):PLF.map(x=>x[0]).filter(x=>f.fases.includes(x)||x===k);return plRender()}
+  if(b=c("[data-plonly]")){const k=b.dataset.plonly;f.fases=f.fases.length===1&&f.fases[0]===k?PLF.map(x=>x[0]):[k];return plRender()}
+  if(b=c("[data-pleig]")){const k=b.dataset.pleig;f.eig=f.eig===k?"":k;return plRender()}
+  if(b=c("[data-plmaand]")){const m=b.dataset.plmaand;f.maand=f.maand===m?"":m;return plRender()}
+  if(b=c("[data-plclr]")){f[b.dataset.plclr]="";return plRender()}
+  if(b=c("[data-plmaat]")){f.maat=b.dataset.plmaat;return plRender()}
+  if(b=c("[data-plsort]")){const k=b.dataset.plsort;if(PL.sort.col===k)PL.sort.dir*=-1;else PL.sort={col:k,dir:k==="bedrag"?-1:1};plRender();const n=PLI.querySelector(`[data-plsort="${k}"]`);if(n)n.focus();return}
+});
+PLI.addEventListener("change",e=>{if(e.target.id==="pleig"){PL.f.eig=e.target.value;plRender()}else if(e.target.id==="plper"){PL.f.per=e.target.value;plRender()}});
+let plQt;PLI.addEventListener("input",e=>{if(e.target.id==="plq"){clearTimeout(plQt);const v=e.target.value;plQt=setTimeout(()=>{PL.f.q=v;plRender()},180)}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!PLE.hidden)plHide()});
+let plRt;window.addEventListener("resize",()=>{if(PLE.hidden)return;clearTimeout(plRt);plRt=setTimeout(plChart,120)});
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&!PLE.hidden&&Date.now()-PL.at>5*60000)plLoad()});
+plBadge();
 
 /* account-venster */
 const AC=document.getElementById("acct");
