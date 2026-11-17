@@ -99,6 +99,9 @@ section.grp{margin-top:26px;border-radius:10px;transition:background .15s}
 h2{font-family:Sora,sans-serif;font-weight:600;font-size:18px;margin:0}
 .gc{font-size:13px;color:var(--muted);white-space:nowrap}
 .gact{display:flex;align-items:center;gap:4px}
+.gh[draggable="true"]{cursor:grab}.ggrip{color:var(--muted);font-size:14px;margin-right:8px;cursor:grab}
+.noteicon.gmove:disabled{opacity:.3;cursor:default}
+section.grp.dragging{opacity:.5}
 .gedit{display:flex;flex-wrap:wrap;gap:6px;align-items:center;flex:1}
 .gin{font-family:Sora,sans-serif;font-size:16px;max-width:420px;flex:1;min-width:180px}
 .gbtn{font:inherit;font-size:13px;border-radius:6px;padding:5px 10px;cursor:pointer}
@@ -532,6 +535,8 @@ const IC={
   del:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>`,
   chev:`<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>`,
   plus:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>`,
+  up:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>`,
+  down:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>`,
   cal:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/></svg>`
 };
 
@@ -558,12 +563,13 @@ function render(){
   const list=document.getElementById("list");let html="",shown=0;
   const filtering=F.rub.size||F.ex.size||F.plan||F.q||F.hideDone;
   const groups=GA().filter(g=>showG(g.id));
+  const ga=GA(),gFirst=ga.length?ga[0].id:null,gLast=ga.length?ga[ga.length-1].id:null;
   groups.forEach(g=>{
     const all=state.tasks.filter(t=>t.g===g.id&&!t.del),vis=all.filter(t=>!t.done&&match(t)).sort((a,b)=>{const x=a.due||"9999-99-99",y=b.due||"9999-99-99";return x<y?-1:x>y?1:0});
     if(!vis.length&&filtering&&(F.plan||F.q||F.hideDone))return;shown+=vis.length+1;
     const dn=all.filter(t=>t.done).length;
-    html+=`<section class="grp" data-group="${g.id}"><div class="gh">${editingGroup===g.id?`<div class="gedit"><input class="ein gin" data-gin="${g.id}" value="${esc(g.t)}" aria-label="Naam van de rubriek"><button class="sv gbtn" data-gsave="${g.id}">Opslaan</button><button class="cx gbtn" data-gcancel="${g.id}">Annuleren</button></div>`:`<h2>${esc(g.t)}</h2>`}
-      <span class="gact"><span class="gc">${dn} van ${all.length}</span>${editingGroup===g.id?"":`<button class="noteicon plus" data-gadd="${g.id}" aria-label="Taak toevoegen aan ${esc(g.t)}" title="Taak toevoegen">${IC.plus}</button><button class="noteicon" data-gedit="${g.id}" aria-label="Naam van ${esc(g.t)} wijzigen" title="Naam wijzigen">${IC.edit}</button><button class="noteicon del" data-gdel="${g.id}" aria-label="Rubriek ${esc(g.t)} verwijderen" title="Rubriek verwijderen">${IC.del}</button>`}</span></div><ul class="tasks">`;
+    html+=`<section class="grp" data-group="${g.id}"><div class="gh"${editingGroup===g.id?"":` draggable="true" data-gdrag="${g.id}"`}>${editingGroup===g.id?`<div class="gedit"><input class="ein gin" data-gin="${g.id}" value="${esc(g.t)}" aria-label="Naam van de rubriek"><button class="sv gbtn" data-gsave="${g.id}">Opslaan</button><button class="cx gbtn" data-gcancel="${g.id}">Annuleren</button></div>`:`<h2><span class="ggrip" title="Sleep om de volgorde te wijzigen" aria-hidden="true">⠿</span>${esc(g.t)}</h2>`}
+      <span class="gact"><span class="gc">${dn} van ${all.length}</span>${editingGroup===g.id?"":`<button class="noteicon gmove" data-gup="${g.id}" aria-label="${esc(g.t)} omhoog" title="Omhoog"${g.id===gFirst?" disabled":""}>${IC.up}</button><button class="noteicon gmove" data-gdown="${g.id}" aria-label="${esc(g.t)} omlaag" title="Omlaag"${g.id===gLast?" disabled":""}>${IC.down}</button><button class="noteicon plus" data-gadd="${g.id}" aria-label="Taak toevoegen aan ${esc(g.t)}" title="Taak toevoegen">${IC.plus}</button><button class="noteicon" data-gedit="${g.id}" aria-label="Naam van ${esc(g.t)} wijzigen" title="Naam wijzigen">${IC.edit}</button><button class="noteicon del" data-gdel="${g.id}" aria-label="Rubriek ${esc(g.t)} verwijderen" title="Rubriek verwijderen">${IC.del}</button>`}</span></div><ul class="tasks">`;
     vis.forEach(t=>{html+=taskLi(t,g.id,false)});
     html+=`</ul>${!vis.length?`<p class="emptyg">${all.length?(all.every(t=>t.done)?"Alles in deze rubriek is afgerond.":"Geen taken voor deze filters."):"Nog geen taken. Klik op het plusje of sleep een taak hierheen."}</p>`:""}
       ${adding===g.id?`<div class="addrow"><input type="text" data-add="${g.id}" placeholder="Nieuwe taak" aria-label="Nieuwe taak in ${esc(g.t)}"><input type="date" data-adddue="${g.id}" aria-label="Datum voor nieuwe taak"><button class="sv gbtn" data-addsave="${g.id}">Opslaan</button><button class="cx gbtn" data-addcancel="${g.id}">Annuleren</button></div>`:""}</section>`;
@@ -620,6 +626,8 @@ L.addEventListener("click",e=>{
   if(b=c("[data-cancel]")){const id=b.dataset.cancel;editing=null;render();focusQ(`[data-edit="${id}"]`);return}
   if(b=c("[data-gdel]")){const g=state.groups.find(x=>x.id===b.dataset.gdel),n=state.tasks.filter(t=>t.g===g.id&&!t.del).length;g.del=true;save();buildFilters();render();renderNotes();
     toast(`Rubriek "${g.t}" verwijderd${n?` met ${n} ta${n>1?"ken":"ak"}`:""}`,()=>{g.del=false;save();buildFilters();render();renderNotes()});return}
+  if(b=c("[data-gup]")){moveGroup(b.dataset.gup,-1,"gup");return}
+  if(b=c("[data-gdown]")){moveGroup(b.dataset.gdown,1,"gdown");return}
   if(b=c("[data-gedit]")){editingGroup=b.dataset.gedit;render();const f=document.querySelector(`[data-gin="${editingGroup}"]`);if(f){f.focus();f.select()}return}
   if(b=c("[data-gsave]")){saveGroup(b.dataset.gsave);return}
   if(b=c("[data-gcancel]")){const id=b.dataset.gcancel;const g=state.groups.find(x=>x.id===id);if(g&&g.fresh){g.del=true;g.purge=true;state.groups=state.groups.filter(x=>!x.purge)}editingGroup=null;render();buildFilters();return}
@@ -631,10 +639,20 @@ function saveGroup(id){const f=document.querySelector(`[data-gin="${id}"]`),v=f.
 function addGroup(){const g={id:uid(),t:"Nieuwe rubriek",fresh:true};state.groups.push(g);F.rub.clear();F.ex.clear();editingGroup=g.id;buildFilters();render();
   const f=document.querySelector(`[data-gin="${g.id}"]`);if(f){f.scrollIntoView({block:"center"});f.focus();f.select()}}
 document.getElementById("addgroup").onclick=addGroup;
+function placeGroup(id,targetId,after){const g=state.groups.find(x=>x.id===id);if(!g||id===targetId)return false;
+  state.groups.splice(state.groups.indexOf(g),1);const j=state.groups.findIndex(x=>x.id===targetId);state.groups.splice(after?j+1:j,0,g);save();buildFilters();render();return true}
+function moveGroup(id,dir,btn){const a=GA(),i=a.findIndex(x=>x.id===id),o=a[i+dir];if(i<0||!o)return;placeGroup(id,o.id,dir>0);
+  const f=document.querySelector(`[data-${btn}="${id}"]`);if(f&&!f.disabled)f.focus();else focusQ(`[data-${btn==="gup"?"gdown":"gup"}="${id}"]`)}
 function moveTask(t,gid){t.g=gid;save();render();toast(`"${t.t}" verplaatst naar ${gname(gid)}`)}
 
 /* drag and drop */
 let dragId=null;
+let gDragId=null;
+L.addEventListener("dragstart",e=>{const h=e.target.closest&&e.target.closest("[data-gdrag]");if(!h||e.target.closest("li.task"))return;gDragId=h.dataset.gdrag;h.closest("section").classList.add("dragging");document.body.classList.add("isdrag");e.dataTransfer.effectAllowed="move";try{e.dataTransfer.setData("text/plain","g:"+gDragId)}catch(_){}});
+L.addEventListener("dragend",()=>{gDragId=null});
+L.addEventListener("dragover",e=>{if(!gDragId)return;const s=e.target.closest("section.grp[data-group]");if(!s)return;e.preventDefault();document.querySelectorAll("section.over").forEach(x=>x!==s&&x.classList.remove("over"));if(s.dataset.group!==gDragId)s.classList.add("over")});
+L.addEventListener("drop",e=>{if(!gDragId)return;const s=e.target.closest("section.grp[data-group]");if(!s)return;e.preventDefault();const id=gDragId,tid=s.dataset.group;if(id===tid)return;
+  const a=GA(),after=a.findIndex(x=>x.id===id)<a.findIndex(x=>x.id===tid);if(placeGroup(id,tid,after))toast(`"${gname(id)}" verplaatst`)});
 L.addEventListener("dragstart",e=>{const li=e.target.closest&&e.target.closest("li.task");if(!li)return;dragId=li.dataset.id;li.classList.add("dragging");document.body.classList.add("isdrag");e.dataTransfer.effectAllowed="move";try{e.dataTransfer.setData("text/plain",dragId)}catch(_){}});
 L.addEventListener("dragend",()=>{dragId=null;document.body.classList.remove("isdrag");document.querySelectorAll(".dragging,.over").forEach(x=>x.classList.remove("dragging","over"))});
 L.addEventListener("dragover",e=>{if(!dragId)return;const s=e.target.closest("section.grp[data-group]");if(!s)return;e.preventDefault();document.querySelectorAll("section.over").forEach(x=>x!==s&&x.classList.remove("over"));s.classList.add("over")});
