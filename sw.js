@@ -1,5 +1,5 @@
 // Verhoog dit nummer na elke wijziging aan de app, dan halen alle apparaten de nieuwe versie op.
-const VERSION = "v10";
+const VERSION = "v11";
 const CACHE = "taken-" + VERSION;
 const SHELL = [
   "./",
