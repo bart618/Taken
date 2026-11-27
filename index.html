@@ -230,7 +230,74 @@ textarea{display:block;width:100%;max-width:72ch;font:inherit;font-size:14px;pad
   .addrow input[type=date]{display:block;flex:1 1 0;min-width:0;min-height:42px;padding:8px 10px;border-style:solid;background:var(--panel);color:var(--text)}
   .addrow .gbtn{padding:10px 14px}
 }
-@media (prefers-reduced-motion:reduce){.bar span,.tbtn .chev{transition:none}}
+@media (prefers-reduced-motion:reduce){.bar span,.tbtn .chev,.gtog .chev{transition:none}}
+/* rubriek in- en uitklappen */
+.gtog{font:inherit;color:inherit;background:none;border:none;padding:0;cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-align:left}
+.gtog .chev{flex:none;color:var(--muted);transition:transform .15s}
+.gtog[aria-expanded="true"] .chev{transform:rotate(90deg)}
+.gn{font-family:"Rethink Sans",system-ui,sans-serif;font-size:12px;font-weight:600;background:var(--chip);color:var(--chipText);border-radius:999px;padding:1px 8px}
+.grp.shut .gh{margin-bottom:0}
+.ftog,.fsum,.mnav,.mmore,.gmore,.dacts{display:none}
+.fcount{display:inline-block;min-width:18px;margin-left:4px;border-radius:999px;background:var(--aub);color:var(--off);font-size:11px;font-weight:600;line-height:18px;text-align:center;padding:0 5px}
+.ftog[aria-expanded="true"] .fcount{background:var(--off);color:var(--aub)}
+@media (max-width:600px){
+  /* compacte kop, zodat er meteen taken in beeld zijn */
+  header{padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px}
+  .hero{gap:10px;align-items:center}
+  h1{font-size:17px;margin:0}
+  .today{font-size:13.5px;margin:2px 0 0}
+  .today strong{font-size:15px}
+  .logo img{height:34px;width:34px;border-radius:8px}
+  .meter{margin-top:8px;gap:4px 10px}
+  .count{font-size:15px}.count small{font-size:12.5px}
+  .bar{min-width:0;height:5px;flex-basis:100%;order:3}
+  .sync{font-size:11.5px;padding:0;margin-left:auto}
+  /* filters: vast bovenin, zoekveld + knop Filters; filterknoppen klappen open en lopen door op meerdere regels */
+  .filters{position:sticky;top:0;padding:8px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+  .filters .frow:first-child{flex-wrap:nowrap}
+  .ftog{display:inline-flex;align-items:center;flex:none;padding:8px 12px}
+  .fsum{display:block;margin:6px 0 0;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #fpanel{display:none}
+  .filters.fopen #fpanel{display:block;max-height:60vh;overflow:auto;padding-top:4px}
+  .filters.fopen .fsum{display:none}
+  #f-view{display:none}
+  #f-rub,#f-plan{flex-wrap:wrap!important;overflow:visible!important;margin:8px 0 0!important;padding:0!important}
+  #f-rub .fb,#f-plan .fb{padding:7px 12px}
+  #f-rub .fsplit .fx{padding:7px 10px}
+  /* taakregel: vinkje, titel en datum; verplaatsen, naam en verwijderen zitten in de uitgeklapte taak */
+  .row{grid-template-columns:22px minmax(0,1fr) auto!important;column-gap:10px!important;padding:11px 0}
+  .row>.cg,.row>.acts{display:none}
+  .row>.cb{grid-column:1!important;width:24px;height:24px}
+  .row>.main{grid-column:2!important;grid-row:1}
+  .row>.due{grid-column:3!important;grid-row:1!important;align-self:start}
+  .row>.chip{grid-column:2!important;grid-row:2!important;justify-self:start}
+  .meta{padding-left:0}
+  .detail{padding:0 0 14px 32px}
+  .dacts{display:flex;flex-wrap:wrap;gap:8px}
+  .dacts .act{padding:9px 14px}
+  .dmv{position:relative}
+  .dmv select{position:absolute;inset:0;opacity:0;width:100%;height:100%;font-size:16px}
+  .ddel{color:var(--lateText);border-color:var(--late)}
+  /* rubriekkop: alleen inklappen, aantal, plusje en een menu met de overige acties */
+  .ggrip{display:none}
+  .gh{flex-wrap:wrap;row-gap:4px}
+  .gc{font-size:12px}
+  .gmore{display:inline-flex}
+  .gh .gmove,.gh [data-gedit],.gh [data-gdel]{display:none}
+  .grp.gopen .gh .gmove,.grp.gopen .gh [data-gedit],.grp.gopen .gh [data-gdel]{display:inline-flex}
+  .grp.gopen .gmore{color:var(--text);background:var(--chip)}
+  section.grp{margin-top:18px}
+  /* onderbalk: wisselen tussen taken en notities zonder lang te scrollen */
+  .mnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--panel);border-top:1px solid var(--line);padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px));gap:6px}
+  .mnav button{flex:1;font:inherit;font-size:14px;font-weight:600;border:0;border-radius:10px;padding:10px 6px;background:none;color:var(--muted);cursor:pointer}
+  .mnav button[aria-pressed="true"]{background:var(--aub);color:var(--off)}
+  main{padding-bottom:90px}
+  .toastbar{bottom:calc(58px + env(safe-area-inset-bottom,0px))}
+  /* voettekst: alleen de belangrijkste knop, de rest onder Meer opties */
+  .mmore{display:inline-block}
+  .col-tasks>.foot .act:not(.pri):not(.mmore){display:none}
+  .col-tasks>.foot.open .act:not(.pri):not(.mmore):not([hidden]){display:inline-block}
+}
 
 /* ---------- Dagstart ---------- */
 .dsbtn{position:relative;font:inherit;font-size:14px;font-weight:600;background:var(--tea);color:var(--jag);border:0;border-radius:999px;padding:6px 16px;cursor:pointer}
@@ -396,10 +463,13 @@ textarea{display:block;width:100%;max-width:72ch;font:inherit;font-size:14px;pad
 
 <div class="filters">
   <div class="wrap">
-    <div class="frow"><span class="flabel">Zoeken</span><input type="search" id="q" placeholder="Zoek in taken en notities" aria-label="Zoeken in taken en notities"></div>
+    <div class="frow"><span class="flabel">Zoeken</span><input type="search" id="q" placeholder="Zoek in taken en notities" aria-label="Zoeken in taken en notities"><button type="button" class="fb ftog" id="ftog" aria-expanded="false" aria-controls="fpanel">Filters <span class="fcount" id="fcount" hidden></span></button></div>
+    <p class="fsum" id="fsum"></p>
+    <div id="fpanel">
     <div class="frow" id="f-view"><span class="flabel">Weergave</span></div>
     <div class="frow" id="f-rub"><span class="flabel">Rubriek</span></div>
     <div class="frow" id="f-plan"><span class="flabel">Planning</span></div>
+    </div>
   </div>
 </div>
 
@@ -409,6 +479,7 @@ textarea{display:block;width:100%;max-width:72ch;font:inherit;font-size:14px;pad
       <div id="list"></div>
       <div class="foot">
         <button class="act pri" id="addgroup">Nieuwe rubriek</button>
+        <button class="act mmore" id="mmore" aria-expanded="false">Meer opties</button>
         <button class="act" id="copy">Kopieer openstaande taken</button>
         <button class="act" id="togglenotes">Alle taaknotities uitklappen</button>
         <button class="act" id="reset">Alle vinkjes wissen</button>
@@ -448,6 +519,7 @@ textarea{display:block;width:100%;max-width:72ch;font:inherit;font-size:14px;pad
 </div>
 <div class="ds" id="ds" hidden role="dialog" aria-modal="true" aria-labelledby="ds-h"><div id="dsin"></div></div>
 <div class="ds" id="pl" hidden role="dialog" aria-modal="true" aria-labelledby="pl-h"><div id="plin"></div></div>
+<nav class="mnav" id="mnav" aria-label="Weergave"></nav>
 <div class="toastbar"><span class="toast" id="toast" role="status"></span></div>
 
 <script>
@@ -470,7 +542,9 @@ const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&g
 const GA=()=>state.groups.filter(g=>!g.del);
 const gname=id=>{const g=state.groups.find(x=>x.id===id);return g?g.t:""};
 const liveT=()=>state.tasks.filter(t=>!t.del&&GA().some(g=>g.id===t.g));
-const openT=new Set(),openN=new Set();let editing=null,editingGroup=null,adding=null;
+const openT=new Set(),openN=new Set();let editing=null,editingGroup=null,adding=null,gMore=null;
+const SHUTKEY=KEY+":dicht";let shut=new Set();try{shut=new Set(JSON.parse(localStorage.getItem(SHUTKEY)||"[]"))}catch(_){}
+const saveShut=()=>{try{localStorage.setItem(SHUTKEY,JSON.stringify([...shut]))}catch(_){}};
 
 /* dates */
 const today=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
@@ -487,7 +561,10 @@ function dueInfo(s){
 }
 
 /* filters */
-const F={rub:new Set(),ex:new Set(),plan:null,q:"",hideDone:false};
+const F={rub:new Set(),ex:new Set(),plan:new Set(),q:""};
+/* standaard bij openen: Twenty verborgen, verlopen en de komende 14 dagen */
+function defaultF(){F.rub.clear();F.ex.clear();F.plan.clear();if(state.groups.some(g=>g.id==="twenty"&&!g.del))F.ex.add("twenty");F.plan.add("late");F.plan.add("two")}
+defaultF();
 const VIEWKEY="koplopers-taken-notities-v1:view",VIEWS={all:"Alles",tasks:"Taken",notes:"Notities"};
 let view="all";try{const v=localStorage.getItem(VIEWKEY);if(VIEWS[v])view=v}catch(_){}
 function applyView(){const sp=document.querySelector(".split"),fl=document.querySelector(".filters");
@@ -495,10 +572,13 @@ function applyView(){const sp=document.querySelector(".split"),fl=document.query
   if(view!=="all"){sp.classList.add("v-"+view);fl.classList.add("v-"+view)}
   const fv=document.getElementById("f-view");fv.innerHTML=`<span class="flabel">Weergave</span>`;
   Object.keys(VIEWS).forEach(k=>{const b=document.createElement("button");b.className="fb";b.textContent=VIEWS[k];b.setAttribute("aria-pressed",view===k);
-    b.onclick=()=>{view=k;try{localStorage.setItem(VIEWKEY,k)}catch(_){}applyView();window.scrollTo({top:0});document.querySelector(`#f-view .fb[aria-pressed="true"]`).focus()};fv.appendChild(b)})}
+    b.onclick=()=>{view=k;try{localStorage.setItem(VIEWKEY,k)}catch(_){}applyView();window.scrollTo({top:0});document.querySelector(`#f-view .fb[aria-pressed="true"]`).focus()};fv.appendChild(b)});
+  const mn=document.getElementById("mnav");mn.innerHTML="";
+  [["tasks","Taken"],["notes","Notities"],["all","Alles"]].forEach(([k,l])=>{const b=document.createElement("button");b.type="button";b.textContent=l;b.setAttribute("aria-pressed",view===k);
+    b.onclick=()=>{view=k;try{localStorage.setItem(VIEWKEY,k)}catch(_){}applyView();window.scrollTo({top:0})};mn.appendChild(b)})}
 const showG=id=>(!F.rub.size||F.rub.has(id))&&!F.ex.has(id);
 const EYEOFF=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
-const PLAN={late:"Verlopen",today:"Vandaag",week:"Komende 7 dagen",none:"Zonder datum"};
+const PLAN={late:"Verlopen",today:"Vandaag",week:"Komende 7 dagen",two:"Komende 14 dagen"};
 function buildFilters(){
   const fr=document.getElementById("f-rub");fr.innerHTML=`<span class="flabel">Rubriek</span>`;
   [F.rub,F.ex].forEach(S=>[...S].forEach(id=>{if(!GA().some(g=>g.id===id))S.delete(id)}));
@@ -509,22 +589,28 @@ function buildFilters(){
     const x=document.createElement("button");x.className="fb fx";x.innerHTML=EYEOFF;x.setAttribute("aria-pressed",F.ex.has(g.id));x.title=x.ariaLabel=`${g.t} verbergen`;x.setAttribute("aria-label",`${g.t} verbergen`);
     x.onclick=()=>{F.rub.delete(g.id);F.ex.has(g.id)?F.ex.delete(g.id):F.ex.add(g.id);refresh();focusQ(`[data-fex="${g.id}"]`)};x.dataset.fex=g.id;
     w.append(b,x);fr.appendChild(w)});
-  if(F.rub.size||F.ex.size){const r=document.createElement("button");r.className="fb reset";r.textContent="Alles tonen";r.onclick=()=>{F.rub.clear();F.ex.clear();F.ex.clear();refresh()};fr.appendChild(r)}
+  if(F.rub.size||F.ex.size){const r=document.createElement("button");r.className="fb reset";r.textContent="Alle rubrieken";r.onclick=()=>{F.rub.clear();F.ex.clear();refresh()};fr.appendChild(r)}
   const a=document.createElement("button");a.className="fb add";a.textContent="Rubriek toevoegen";a.onclick=addGroup;fr.appendChild(a);
   const fp=document.getElementById("f-plan");fp.innerHTML=`<span class="flabel">Planning</span>`;
-  Object.keys(PLAN).forEach(k=>{const b=document.createElement("button");b.className="fb";b.textContent=PLAN[k];b.setAttribute("aria-pressed",F.plan===k);
-    b.onclick=()=>{F.plan=F.plan===k?null:k;buildFilters();render()};fp.appendChild(b)});
-  const h=document.createElement("button");h.className="fb";h.textContent="Verberg afgevinkt";h.setAttribute("aria-pressed",F.hideDone);
-  h.onclick=()=>{F.hideDone=!F.hideDone;h.setAttribute("aria-pressed",F.hideDone);render()};fp.appendChild(h);
+  Object.keys(PLAN).forEach(k=>{const b=document.createElement("button");b.className="fb";b.textContent=PLAN[k];b.setAttribute("aria-pressed",F.plan.has(k));b.dataset.plan=k;
+    b.onclick=()=>{F.plan.has(k)?F.plan.delete(k):F.plan.add(k);buildFilters();render();focusQ(`[data-plan="${k}"]`)};fp.appendChild(b)});
+  if(F.plan.size){const r=document.createElement("button");r.className="fb reset";r.textContent="Alle datums";r.onclick=()=>{F.plan.clear();buildFilters();render()};fp.appendChild(r)}
+  fSummary();
 }
+/* korte samenvatting van de actieve filters (mobiel, bij ingeklapte filters) */
+function fSummary(){const el=document.getElementById("fsum"),n=document.getElementById("fcount");if(!el)return;const p=[];
+  Object.keys(PLAN).forEach(k=>{if(F.plan.has(k))p.push(PLAN[k])});
+  if(F.rub.size)p.push([...F.rub].map(gname).join(", "));
+  if(F.ex.size)p.push([...F.ex].map(gname).join(", ")+" verborgen");
+  el.textContent=p.length?p.join(" · "):"Alle taken";const c=F.plan.size+F.rub.size+F.ex.size;n.textContent=c?String(c):"";n.hidden=!c}
+document.getElementById("ftog").onclick=e=>{const fl=document.querySelector(".filters"),o=fl.classList.toggle("fopen");e.currentTarget.setAttribute("aria-expanded",o)};
+document.getElementById("mmore").onclick=e=>{const f=e.currentTarget.closest(".foot"),o=f.classList.toggle("open");e.currentTarget.setAttribute("aria-expanded",o);e.currentTarget.textContent=o?"Minder opties":"Meer opties"};
 document.getElementById("q").addEventListener("input",e=>{F.q=e.target.value.toLowerCase();render();renderNotes()});
 function match(t){
-  if(F.hideDone&&t.done)return false;
-  if(F.plan){const i=dueInfo(t.due);
-    if(F.plan==="none"&&i)return false;
-    if(F.plan==="late"&&!(i&&i.diff<0))return false;
-    if(F.plan==="today"&&!(i&&i.diff===0))return false;
-    if(F.plan==="week"&&!(i&&i.diff>=0&&i.diff<=7))return false;}
+  /* meerdere planningfilters: een taak telt mee als hij bij minstens een ervan past */
+  if(F.plan.size){const i=dueInfo(t.due);if(!i)return false;const d=i.diff;
+    const ok=(F.plan.has("late")&&d<0)||(F.plan.has("today")&&d===0)||(F.plan.has("week")&&d>=0&&d<=7)||(F.plan.has("two")&&d>=0&&d<=14);
+    if(!ok)return false;}
   if(F.q&&!(t.t+" "+(t.note||"")).toLowerCase().includes(F.q))return false;
   return true;
 }
@@ -537,6 +623,7 @@ const IC={
   plus:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>`,
   up:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>`,
   down:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>`,
+  more:`<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>`,
   cal:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/></svg>`
 };
 
@@ -556,22 +643,23 @@ function taskLi(t,gid,chip){
         <button class="noteicon${t.note?" has":""}" data-open="${t.id}" aria-expanded="${open}" aria-label="Notitie en datum bij ${esc(t.t)} ${open?"inklappen":"uitklappen"}" title="${t.note?"Notitie":"Notitie of datum toevoegen"}">${IC.note}${t.note?'<span class="dot"></span>':""}</button>
         <button class="noteicon del" data-del="${t.id}" aria-label="${esc(t.t)} verwijderen" title="Verwijderen">${IC.del}</button></div></div>
         ${open?`<div class="detail"><div class="drow">${IC.cal}<label for="dd-${t.id}">Datum</label><input type="date" id="dd-${t.id}" data-due="${t.id}" value="${t.due||""}">${t.due?`<button class="linkbtn" data-nodue="${t.id}">Datum wissen</button>`:""}</div>
-        <textarea data-ta="${t.id}" aria-label="Notitie bij ${esc(t.t)}" placeholder="Notitie bij deze taak">${esc(t.note||"")}</textarea></div>`:""}</li>`;
+        <textarea data-ta="${t.id}" aria-label="Notitie bij ${esc(t.t)}" placeholder="Notitie bij deze taak">${esc(t.note||"")}</textarea>
+        <div class="dacts"><button class="act" data-edit="${t.id}">Naam wijzigen</button><label class="act dmv">Verplaatsen<select data-mv="${t.id}" aria-label="${esc(t.t)} verplaatsen naar rubriek"><option value="">Verplaats naar…</option>${GA().filter(x=>x.id!==gid).map(x=>`<option value="${x.id}">${esc(x.t)}</option>`).join("")}</select></label><button class="act ddel" data-del="${t.id}">Verwijderen</button></div></div>`:""}</li>`;
 }
 let doneOpen=false;
 function render(){
   const list=document.getElementById("list");let html="",shown=0;
-  const filtering=F.rub.size||F.ex.size||F.plan||F.q||F.hideDone;
+  const filtering=F.rub.size||F.ex.size||F.plan.size||F.q;
   const groups=GA().filter(g=>showG(g.id));
   const ga=GA(),gFirst=ga.length?ga[0].id:null,gLast=ga.length?ga[ga.length-1].id:null;
   groups.forEach(g=>{
     const all=state.tasks.filter(t=>t.g===g.id&&!t.del),vis=all.filter(t=>!t.done&&match(t)).sort((a,b)=>{const x=a.due||"9999-99-99",y=b.due||"9999-99-99";return x<y?-1:x>y?1:0});
-    if(!vis.length&&filtering&&(F.plan||F.q||F.hideDone))return;shown+=vis.length+1;
+    if(!vis.length&&filtering&&(F.plan.size||F.q))return;shown+=vis.length+1;
     const dn=all.filter(t=>t.done).length;
-    html+=`<section class="grp" data-group="${g.id}"><div class="gh"${editingGroup===g.id?"":` draggable="true" data-gdrag="${g.id}"`}>${editingGroup===g.id?`<div class="gedit"><input class="ein gin" data-gin="${g.id}" value="${esc(g.t)}" aria-label="Naam van de rubriek"><button class="sv gbtn" data-gsave="${g.id}">Opslaan</button><button class="cx gbtn" data-gcancel="${g.id}">Annuleren</button></div>`:`<h2><span class="ggrip" title="Sleep om de volgorde te wijzigen" aria-hidden="true">⠿</span>${esc(g.t)}</h2>`}
-      <span class="gact"><span class="gc">${dn} van ${all.length}</span>${editingGroup===g.id?"":`<button class="noteicon gmove" data-gup="${g.id}" aria-label="${esc(g.t)} omhoog" title="Omhoog"${g.id===gFirst?" disabled":""}>${IC.up}</button><button class="noteicon gmove" data-gdown="${g.id}" aria-label="${esc(g.t)} omlaag" title="Omlaag"${g.id===gLast?" disabled":""}>${IC.down}</button><button class="noteicon plus" data-gadd="${g.id}" aria-label="Taak toevoegen aan ${esc(g.t)}" title="Taak toevoegen">${IC.plus}</button><button class="noteicon" data-gedit="${g.id}" aria-label="Naam van ${esc(g.t)} wijzigen" title="Naam wijzigen">${IC.edit}</button><button class="noteicon del" data-gdel="${g.id}" aria-label="Rubriek ${esc(g.t)} verwijderen" title="Rubriek verwijderen">${IC.del}</button>`}</span></div><ul class="tasks">`;
-    vis.forEach(t=>{html+=taskLi(t,g.id,false)});
-    html+=`</ul>${!vis.length?`<p class="emptyg">${all.length?(all.every(t=>t.done)?"Alles in deze rubriek is afgerond.":"Geen taken voor deze filters."):"Nog geen taken. Klik op het plusje of sleep een taak hierheen."}</p>`:""}
+    html+=`<section class="grp${gMore===g.id?" gopen":""}${shut.has(g.id)?" shut":""}" data-group="${g.id}"><div class="gh"${editingGroup===g.id?"":` draggable="true" data-gdrag="${g.id}"`}>${editingGroup===g.id?`<div class="gedit"><input class="ein gin" data-gin="${g.id}" value="${esc(g.t)}" aria-label="Naam van de rubriek"><button class="sv gbtn" data-gsave="${g.id}">Opslaan</button><button class="cx gbtn" data-gcancel="${g.id}">Annuleren</button></div>`:`<h2><span class="ggrip" title="Sleep om de volgorde te wijzigen" aria-hidden="true">⠿</span><button class="gtog" data-gtog="${g.id}" aria-expanded="${!shut.has(g.id)}" title="${shut.has(g.id)?"Uitklappen":"Inklappen"}">${IC.chev}<span>${esc(g.t)}</span>${shut.has(g.id)&&vis.length?`<span class="gn">${vis.length}</span>`:""}</button></h2>`}
+      <span class="gact"><span class="gc">${dn} van ${all.length}</span>${editingGroup===g.id?"":`<button class="noteicon gmore" data-gmore="${g.id}" aria-expanded="${gMore===g.id}" aria-label="Meer acties voor ${esc(g.t)}" title="Meer acties">${IC.more}</button><button class="noteicon gmove" data-gup="${g.id}" aria-label="${esc(g.t)} omhoog" title="Omhoog"${g.id===gFirst?" disabled":""}>${IC.up}</button><button class="noteicon gmove" data-gdown="${g.id}" aria-label="${esc(g.t)} omlaag" title="Omlaag"${g.id===gLast?" disabled":""}>${IC.down}</button><button class="noteicon plus" data-gadd="${g.id}" aria-label="Taak toevoegen aan ${esc(g.t)}" title="Taak toevoegen">${IC.plus}</button><button class="noteicon" data-gedit="${g.id}" aria-label="Naam van ${esc(g.t)} wijzigen" title="Naam wijzigen">${IC.edit}</button><button class="noteicon del" data-gdel="${g.id}" aria-label="Rubriek ${esc(g.t)} verwijderen" title="Rubriek verwijderen">${IC.del}</button>`}</span></div><ul class="tasks">`;
+    if(!shut.has(g.id))vis.forEach(t=>{html+=taskLi(t,g.id,false)});
+    html+=`</ul>${!vis.length&&!shut.has(g.id)?`<p class="emptyg">${all.length?(all.every(t=>t.done)?"Alles in deze rubriek is afgerond.":"Geen taken voor deze filters."):"Nog geen taken. Klik op het plusje of sleep een taak hierheen."}</p>`:""}
       ${adding===g.id?`<div class="addrow"><input type="text" data-add="${g.id}" placeholder="Nieuwe taak" aria-label="Nieuwe taak in ${esc(g.t)}"><input type="date" data-adddue="${g.id}" aria-label="Datum voor nieuwe taak"><button class="sv gbtn" data-addsave="${g.id}">Opslaan</button><button class="cx gbtn" data-addcancel="${g.id}">Annuleren</button></div>`:""}</section>`;
   });
   const doneList=groups.flatMap(g=>state.tasks.filter(t=>t.g===g.id&&!t.del&&t.done&&match(t))).sort((a,b)=>(b.doneAt||0)-(a.doneAt||0));
@@ -613,12 +701,14 @@ function addTask(g){const inp=document.querySelector(`[data-add="${g}"]`),v=inp?
 L.addEventListener("click",e=>{
   const c=s=>e.target.closest(s);let b;
   if(b=c(".duepick")){try{if(b.showPicker)b.showPicker()}catch(_){}return}
+  if(b=c("[data-gtog]")){const id=b.dataset.gtog;shut.has(id)?shut.delete(id):shut.add(id);saveShut();render();focusQ(`[data-gtog="${id}"]`);return}
+  if(b=c("[data-gmore]")){const id=b.dataset.gmore;gMore=gMore===id?null:id;render();focusQ(`[data-gmore="${id}"]`);return}
   if(b=c("[data-donetoggle]")){doneOpen=!doneOpen;render();focusQ("[data-donetoggle]");return}
   if(b=c("[data-addsave]")){addTask(b.dataset.addsave);return}
-  if(b=c("[data-gadd]")){const id=b.dataset.gadd;adding=adding===id?null:id;render();if(adding)focusQ(`[data-add="${id}"]`);return}
+  if(b=c("[data-gadd]")){const id=b.dataset.gadd;adding=adding===id?null:id;if(adding&&shut.delete(id))saveShut();render();if(adding)focusQ(`[data-add="${id}"]`);return}
   if(b=c("[data-addcancel]")){const id=b.dataset.addcancel;adding=null;render();focusQ(`[data-gadd="${id}"]`);return}
   if(b=c("[data-open]")){const id=b.dataset.open;openT.has(id)?openT.delete(id):openT.add(id);render();
-    if(openT.has(id))focusQ(`[data-ta="${id}"]`);else focusQ(`.tbtn[data-open="${id}"]`);return}
+    if(openT.has(id)){if(!matchMedia("(max-width:600px)").matches)focusQ(`[data-ta="${id}"]`)}else focusQ(`.tbtn[data-open="${id}"]`);return}
   if(b=c("[data-nodue]")){const t=state.tasks.find(x=>x.id===b.dataset.nodue);t.due="";save();render();focusQ(`#dd-${t.id}`);return}
   if(b=c("[data-del]")){const t=state.tasks.find(x=>x.id===b.dataset.del);t.del=true;openT.delete(t.id);save();render();toast(`"${t.t}" verwijderd`,()=>{t.del=false;save();render()});return}
   if(b=c("[data-edit]")){editing=b.dataset.edit;render();const f=document.querySelector(`[data-et="${editing}"]`);if(f){f.focus();f.select()}return}
@@ -728,7 +818,7 @@ document.getElementById("importfile").addEventListener("change",e=>{
     try{const d=JSON.parse(r.result);if(!d||!Array.isArray(d.groups)||!Array.isArray(d.tasks))throw 0;
       if(!Array.isArray(d.notes))d.notes=[];
       if(!confirm("Deze back-up vervangt alle taken en notities op dit apparaat. Doorgaan?"))return;
-      const prev=JSON.parse(JSON.stringify(state));state=d;F.rub.clear();F.ex.clear();save();buildFilters();render();renderNotes();
+      const prev=JSON.parse(JSON.stringify(state));state=d;defaultF();save();buildFilters();render();renderNotes();
       toast("Back-up teruggezet",()=>{state=prev;save();buildFilters();render();renderNotes()});
     }catch(_){toast("Dit is geen geldig back-upbestand")}
   };r.readAsText(f);
@@ -763,8 +853,9 @@ function syncLabel(){setSync(syncText());const a=document.getElementById("astat"
 
 function applyState(d){
   if(!Array.isArray(d.notes))d.notes=[];
+  const first=!state.groups.some(g=>g.id==="twenty")&&d.groups&&d.groups.some(g=>g.id==="twenty");
   state=d;try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
-  F.rub.clear();F.ex.clear();buildFilters();render();renderNotes();
+  if(first)F.ex.add("twenty");buildFilters();render();renderNotes();
 }
 function busy(){
   const a=document.activeElement;
