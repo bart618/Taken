@@ -654,7 +654,7 @@ function render(){
   const ga=GA(),gFirst=ga.length?ga[0].id:null,gLast=ga.length?ga[ga.length-1].id:null;
   groups.forEach(g=>{
     const all=state.tasks.filter(t=>t.g===g.id&&!t.del),vis=all.filter(t=>!t.done&&match(t)).sort((a,b)=>{const x=a.due||"9999-99-99",y=b.due||"9999-99-99";return x<y?-1:x>y?1:0});
-    if(!vis.length&&filtering&&(F.plan.size||F.q))return;shown+=vis.length+1;
+    if(!vis.length&&filtering&&(F.plan.size||F.q)&&editingGroup!==g.id&&adding!==g.id)return;shown+=vis.length+1;
     const dn=all.filter(t=>t.done).length;
     html+=`<section class="grp${gMore===g.id?" gopen":""}${shut.has(g.id)?" shut":""}" data-group="${g.id}"><div class="gh"${editingGroup===g.id?"":` draggable="true" data-gdrag="${g.id}"`}>${editingGroup===g.id?`<div class="gedit"><input class="ein gin" data-gin="${g.id}" value="${esc(g.t)}" aria-label="Naam van de rubriek"><button class="sv gbtn" data-gsave="${g.id}">Opslaan</button><button class="cx gbtn" data-gcancel="${g.id}">Annuleren</button></div>`:`<h2><span class="ggrip" title="Sleep om de volgorde te wijzigen" aria-hidden="true">⠿</span><button class="gtog" data-gtog="${g.id}" aria-expanded="${!shut.has(g.id)}" title="${shut.has(g.id)?"Uitklappen":"Inklappen"}">${IC.chev}<span>${esc(g.t)}</span>${shut.has(g.id)&&vis.length?`<span class="gn">${vis.length}</span>`:""}</button></h2>`}
       <span class="gact"><span class="gc">${dn} van ${all.length}</span>${editingGroup===g.id?"":`<button class="noteicon gmore" data-gmore="${g.id}" aria-expanded="${gMore===g.id}" aria-label="Meer acties voor ${esc(g.t)}" title="Meer acties">${IC.more}</button><button class="noteicon gmove" data-gup="${g.id}" aria-label="${esc(g.t)} omhoog" title="Omhoog"${g.id===gFirst?" disabled":""}>${IC.up}</button><button class="noteicon gmove" data-gdown="${g.id}" aria-label="${esc(g.t)} omlaag" title="Omlaag"${g.id===gLast?" disabled":""}>${IC.down}</button><button class="noteicon plus" data-gadd="${g.id}" aria-label="Taak toevoegen aan ${esc(g.t)}" title="Taak toevoegen">${IC.plus}</button><button class="noteicon" data-gedit="${g.id}" aria-label="Naam van ${esc(g.t)} wijzigen" title="Naam wijzigen">${IC.edit}</button><button class="noteicon del" data-gdel="${g.id}" aria-label="Rubriek ${esc(g.t)} verwijderen" title="Rubriek verwijderen">${IC.del}</button>`}</span></div><ul class="tasks">`;
@@ -726,7 +726,7 @@ function saveEdit(id){const f=document.querySelector(`[data-et="${id}"]`),v=f.va
   state.tasks.find(x=>x.id===id).t=v;editing=null;save();render();focusQ(`[data-edit="${id}"]`)}
 function saveGroup(id){const f=document.querySelector(`[data-gin="${id}"]`),v=f.value.trim();if(!v){f.focus();return}
   const g=state.groups.find(x=>x.id===id);g.t=v;if(g.fresh)adding=id;delete g.fresh;editingGroup=null;save();buildFilters();render();renderNotes();focusQ(`[data-add="${id}"]`)}
-function addGroup(){const g={id:uid(),t:"Nieuwe rubriek",fresh:true};state.groups.push(g);F.rub.clear();F.ex.clear();editingGroup=g.id;buildFilters();render();
+function addGroup(){const g={id:uid(),t:"Nieuwe rubriek",fresh:true};state.groups.push(g);F.rub.clear();F.ex.clear();F.plan.clear();editingGroup=g.id;buildFilters();render();
   const f=document.querySelector(`[data-gin="${g.id}"]`);if(f){f.scrollIntoView({block:"center"});f.focus();f.select()}}
 document.getElementById("addgroup").onclick=addGroup;
 function placeGroup(id,targetId,after){const g=state.groups.find(x=>x.id===id);if(!g||id===targetId)return false;
